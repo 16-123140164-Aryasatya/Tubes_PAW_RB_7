@@ -1,0 +1,15 @@
+Metadata-Version: 2.4
+Name: library_backend
+Version: 1.0
+Summary: Library Management System Backend
+Requires-Dist: pyramid
+Requires-Dist: pyramid-tm
+Requires-Dist: SQLAlchemy
+Requires-Dist: psycopg2-binary
+Requires-Dist: alembic
+Requires-Dist: bcrypt
+Requires-Dist: PyJWT
+Requires-Dist: python-dotenv
+Requires-Dist: waitress
+Dynamic: requires-dist
+Dynamic: summary

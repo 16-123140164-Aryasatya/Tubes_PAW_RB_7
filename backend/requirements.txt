@@ -1,0 +1,12 @@
+pyramid==2.0.2
+pyramid-tm==2.5
+pyramid-retry==2.1.1
+SQLAlchemy==2.0.23
+psycopg2-binary==2.9.9
+alembic==1.13.0
+bcrypt==4.1.2
+PyJWT==2.8.0
+python-dotenv==1.0.0
+waitress==2.1.2
+zope.sqlalchemy==3.1
+transaction==5.0
