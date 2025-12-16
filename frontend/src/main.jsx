@@ -1,11 +1,21 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
 import { BrowserRouter } from "react-router-dom";
-import "./styles.css";
+
+import "./styles/base.css";
+import AppLayout from "./components/AppLayout";
+
+import { AuthProvider } from "./auth/AuthContext";
+import { LibraryProvider } from "./store/LibraryStore";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>
+  <React.StrictMode>
+    <BrowserRouter>
+      <AuthProvider>
+        <LibraryProvider>
+          <AppLayout />
+        </LibraryProvider>
+      </AuthProvider>
+    </BrowserRouter>
+  </React.StrictMode>
 );

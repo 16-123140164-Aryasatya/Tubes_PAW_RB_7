@@ -1,64 +1,56 @@
 import React, { useState } from "react";
-import API from "../api/api";
-import { useNavigate } from "react-router-dom";
-import "../styles.css";
+import { Link, useNavigate } from "react-router-dom";
+import Card from "../components/Card";
+import Input from "../components/Input";
+import Button from "../components/Button";
+import { useAuth } from "../auth/AuthContext";
+import { useToast } from "../components/Toast";
 
 export default function Register() {
+  const { register } = useAuth();
+  const toast = useToast();
+  const nav = useNavigate();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
-  const [message, setMessage] = useState("");
+  const [busy, setBusy] = useState(false);
 
-  const submit = async (e) => {
+  async function onSubmit(e) {
     e.preventDefault();
-    try {
-      await API.post("/api/register", { name, email, password });
-      setMessage("Registration successful! You can now login.");
-      setTimeout(() => navigate("/login"), 1500);
-    } catch {
-      setMessage("Registration failed. Try again.");
-    }
-  };
+    setBusy(true);
+    const res = await register(name, email, password);
+    setBusy(false);
+
+    if (!res.ok) return toast.push(res.message || "Register failed", "error");
+
+    toast.push("Registered! Please login.", "success");
+    nav("/login");
+  }
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <h2>Create Account ✨</h2>
-        <p className="subtitle">Register to join the library</p>
-
-        {message && <p className="info">{message}</p>}
-
-        <form onSubmit={submit}>
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Full Name"
-            required
-          />
-          <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            type="email"
-            required
-          />
-          <input
+    <div className="stack">
+      <Card title="Register" subtitle="Create account">
+        <form className="stack" onSubmit={onSubmit}>
+          <Input label="Name" value={name} onChange={(e) => setName(e.target.value)} />
+          <Input label="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <Input
+            label="Password"
+            type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            type="password"
-            required
           />
-          <button className="btn-primary" type="submit">
-            Register
-          </button>
-        </form>
 
-        <p className="switch-text">
-          Already have an account? <a href="/login">Login</a>
-        </p>
-      </div>
+          <div className="row">
+            <Button variant="primary" type="submit" disabled={busy}>
+              {busy ? "Creating..." : "Register"}
+            </Button>
+            <Link className="btn" to="/login">
+              Back to login
+            </Link>
+          </div>
+        </form>
+      </Card>
     </div>
   );
 }

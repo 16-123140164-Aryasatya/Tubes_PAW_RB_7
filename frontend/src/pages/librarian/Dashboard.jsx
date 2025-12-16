@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from "react";
-import { useLibrary } from "../store/LibraryStore";
+import React, { useState } from "react";
+import { useLibrary } from "../../store/LibraryStore";
 
 function StatCard({ title, value, delta, deltaTone = "green", extra }) {
   return (
@@ -10,63 +10,6 @@ function StatCard({ title, value, delta, deltaTone = "green", extra }) {
       </div>
       <div className="statValue">{value}</div>
       {extra && <div className="statExtra">{extra}</div>}
-    </div>
-  );
-}
-
-function TxRow({ title, author, id, borrower, due, status, statusTone, coverTone }) {
-  return (
-    <div className="txRow">
-      <div className="txBook">
-        <div className={`bookCover cover-${coverTone}`} />
-        <div>
-          <div className="txTitle">{title}</div>
-          <div className="txSub">
-            {author} <span className="dot">•</span> ID: #{id}
-          </div>
-        </div>
-      </div>
-      <div className="txCell">
-        <div className="who">
-          <div className="whoAvatar">👤</div>
-          <div className="whoName">{borrower}</div>
-        </div>
-      </div>
-      <div className="txCell">{due}</div>
-      <div className="txCell">
-        <span className={`pill pill-${statusTone}`}>{status}</span>
-      </div>
-      <div className="txCell txAction">⋮</div>
-    </div>
-  );
-}
-
-function BorrowCard({ name, role, time, book, meta, onApprove, onDeny }) {
-  return (
-    <div className="borrowCard">
-      <div className="borrowHead">
-        <div className="borrowUser">
-          <div className="photo">🧑</div>
-          <div>
-            <div className="borrowName">{name}</div>
-            <div className="borrowTime">{time}</div>
-          </div>
-        </div>
-        <span className="roleTag">{role}</span>
-      </div>
-
-      <div className="borrowBody">
-        <div className="bookThumb" />
-        <div>
-          <div className="borrowBook">{book}</div>
-          <div className="borrowMeta">{meta}</div>
-        </div>
-      </div>
-
-      <div className="borrowActions">
-        <button className="btnSoft btnSoft-green" onClick={onApprove}>✓ Approve</button>
-        <button className="btnSoft btnSoft-red" onClick={onDeny}>Deny</button>
-      </div>
     </div>
   );
 }
@@ -89,18 +32,6 @@ export default function Dashboard() {
     setOpen(false);
     setForm({ title: "", author: "", category: "", stock: "1" });
   }
-
-  const txView = useMemo(() => {
-    return transactions.slice(0, 3).map((t) => {
-      const b = books.find((x) => x.id === t.bookId);
-      const title = b?.title ?? t.bookId;
-      const author = b?.author ?? "Unknown";
-      const id = (t.bookId || "").replace("B", "") || "0000";
-      const statusTone = t.status === "Overdue" ? "red" : t.status === "Pending" ? "yellow" : "green";
-      const coverTone = t.status === "Overdue" ? "teal" : t.status === "Pending" ? "yellow" : "blue";
-      return { title, author, id, borrower: t.borrower, due: t.due, status: t.status, statusTone, coverTone };
-    });
-  }, [transactions, books]);
 
   return (
     <div className="dashWrap">
@@ -125,16 +56,12 @@ export default function Dashboard() {
             <div className="mBody">
               <label className="mLabel">Title</label>
               <input className="mInput" value={form.title} onChange={(e) => setField("title", e.target.value)} />
-
               <label className="mLabel">Author</label>
               <input className="mInput" value={form.author} onChange={(e) => setField("author", e.target.value)} />
-
               <label className="mLabel">Category</label>
               <input className="mInput" value={form.category} onChange={(e) => setField("category", e.target.value)} />
-
               <label className="mLabel">Stock</label>
               <input className="mInput" value={form.stock} onChange={(e) => setField("stock", e.target.value)} />
-
               <div className="mActions">
                 <button className="btnGhost2" onClick={() => setOpen(false)}>Cancel</button>
                 <button className="btnPrimary" onClick={submit}>Save</button>
@@ -146,45 +73,15 @@ export default function Dashboard() {
 
       <div className="statsGrid">
         <StatCard title="Total Books (Stock)" value={String(stats.totalBooks)} delta="+12%" deltaTone="green" />
-        <StatCard
-          title="Books Issued"
-          value={String(stats.issued)}
-          delta="+5%"
-          deltaTone="green"
-          extra={<div className="miniProgress"><div className="miniProgressFill" /></div>}
-        />
-        <StatCard
-          title="Overdue Returns"
-          value={String(stats.overdue)}
-          delta="+2%"
-          deltaTone="red"
-          extra={<div className="warnText">Requires Attention</div>}
-        />
-        <StatCard
-          title="Active Members"
-          value={String(stats.members)}
-          delta="+8%"
-          deltaTone="green"
-          extra={
-            <div className="miniAvatars">
-              <span className="miniA" />
-              <span className="miniA" />
-              <span className="miniA" />
-              <span className="miniMore">+4</span>
-            </div>
-          }
-        />
+        <StatCard title="Books Issued" value={String(stats.issued)} delta="+5%" deltaTone="green" />
+        <StatCard title="Overdue Returns" value={String(stats.overdue)} delta="+2%" deltaTone="red" extra={<div className="warnText">Requires Attention</div>} />
+        <StatCard title="Active Members" value={String(stats.members)} delta="+8%" deltaTone="green" />
       </div>
 
       <div className="mainGrid">
         <div className="panel">
           <div className="panelHead">
             <div className="panelTitle">Recent Transactions</div>
-            <div className="tabs">
-              <button className="tab active" onClick={() => alert("Filter All (mock)")}>All</button>
-              <button className="tab" onClick={() => alert("Filter Loans (mock)")}>Loans</button>
-              <button className="tab" onClick={() => alert("Filter Returns (mock)")}>Returns</button>
-            </div>
           </div>
 
           <div className="table">
@@ -196,13 +93,30 @@ export default function Dashboard() {
               <div>Action</div>
             </div>
 
-            {txView.map((t, idx) => (
-              <TxRow key={idx} {...t} />
-            ))}
+            {transactions.slice(0, 3).map((t) => {
+              const b = books.find((x) => x.id === t.bookId);
+              const title = b?.title ?? t.bookId;
+              const author = b?.author ?? "Unknown";
+              const id = (t.bookId || "").replace("B", "") || "0000";
+              const statusTone = t.status === "Overdue" ? "red" : t.status === "Pending" ? "yellow" : "green";
+              const coverTone = t.status === "Overdue" ? "teal" : t.status === "Pending" ? "yellow" : "blue";
 
-            <div className="viewAll" onClick={() => alert("View all (mock)")}>
-              View All Transactions →
-            </div>
+              return (
+                <div className="txRow" key={t.id}>
+                  <div className="txBook">
+                    <div className={`bookCover cover-${coverTone}`} />
+                    <div>
+                      <div className="txTitle">{title}</div>
+                      <div className="txSub">{author} <span className="dot">•</span> ID: #{id}</div>
+                    </div>
+                  </div>
+                  <div className="txCell">{t.borrower}</div>
+                  <div className="txCell">{t.due}</div>
+                  <div className="txCell"><span className={`pill pill-${statusTone}`}>{t.status}</span></div>
+                  <div className="txCell txAction">⋮</div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -218,16 +132,31 @@ export default function Dashboard() {
                 const b = books.find((x) => x.id === r.bookId);
                 const meta = `${b?.category ?? "General"} • ${b?.stock > 0 ? "In Stock" : "Out of Stock"}`;
                 return (
-                  <BorrowCard
-                    key={r.id}
-                    name={r.name}
-                    role={r.role}
-                    time={r.time}
-                    book={b?.title ?? r.bookId}
-                    meta={meta}
-                    onApprove={() => approveRequest(r.id)}
-                    onDeny={() => denyRequest(r.id)}
-                  />
+                  <div className="borrowCard" key={r.id}>
+                    <div className="borrowHead">
+                      <div className="borrowUser">
+                        <div className="photo">🧑</div>
+                        <div>
+                          <div className="borrowName">{r.name}</div>
+                          <div className="borrowTime">{r.time}</div>
+                        </div>
+                      </div>
+                      <span className="roleTag">{r.role}</span>
+                    </div>
+
+                    <div className="borrowBody">
+                      <div className="bookThumb" />
+                      <div>
+                        <div className="borrowBook">{b?.title ?? r.bookId}</div>
+                        <div className="borrowMeta">{meta}</div>
+                      </div>
+                    </div>
+
+                    <div className="borrowActions">
+                      <button className="btnSoft btnSoft-green" onClick={() => approveRequest(r.id)}>✓ Approve</button>
+                      <button className="btnSoft btnSoft-red" onClick={() => denyRequest(r.id)}>Deny</button>
+                    </div>
+                  </div>
                 );
               })}
             </div>

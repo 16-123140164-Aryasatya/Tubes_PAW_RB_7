@@ -1,61 +1,54 @@
 import React, { useState } from "react";
-import API, { setToken } from "../api/api";
-import { useNavigate } from "react-router-dom";
-import "../styles.css";
+import { Link, useNavigate } from "react-router-dom";
+import Card from "../components/Card";
+import Input from "../components/Input";
+import Button from "../components/Button";
+import { useAuth } from "../auth/AuthContext";
+import { useToast } from "../components/Toast";
 
-export default function Login({ setUser }) {
+export default function Login() {
+  const { login } = useAuth();
+  const toast = useToast();
+  const nav = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
-  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
 
-  const submit = async (e) => {
+  async function onSubmit(e) {
     e.preventDefault();
-    setError("");
-    try {
-      const res = await API.post("/api/login", { email, password });
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-      localStorage.setItem("token", res.data.token);
-      setToken(res.data.token);
-      setUser(res.data.user);
-      navigate("/");
-    } catch {
-      setError("Invalid email or password");
-    }
-  };
+    setBusy(true);
+    const res = await login(email, password);
+    setBusy(false);
+
+    if (!res.ok) return toast.push(res.message || "Login failed", "error");
+
+    toast.push("Logged in!", "success");
+    nav("/");
+  }
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <h2>Welcome Back 👋</h2>
-        <p className="subtitle">Login to your account</p>
-
-        {error && <p className="error">{error}</p>}
-
-        <form onSubmit={submit}>
-          <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            type="email"
-            required
-          />
-          <input
+    <div className="stack">
+      <Card title="Login" subtitle="Welcome back">
+        <form className="stack" onSubmit={onSubmit}>
+          <Input label="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <Input
+            label="Password"
+            type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            type="password"
-            required
           />
-          <button className="btn-primary" type="submit">
-            Login
-          </button>
-        </form>
 
-        <p className="switch-text">
-          Don’t have an account? <a href="/register">Register</a>
-        </p>
-      </div>
+          <div className="row">
+            <Button variant="primary" type="submit" disabled={busy}>
+              {busy ? "Signing in..." : "Login"}
+            </Button>
+            <Link className="btn" to="/register">
+              Register
+            </Link>
+          </div>
+        </form>
+      </Card>
     </div>
   );
 }
