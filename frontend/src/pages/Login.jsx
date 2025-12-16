@@ -37,7 +37,7 @@ export default function Login({ setUser }) {
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
             <span className="material-symbols-outlined text-3xl">local_library</span>
           </div>
-          <h2 className="text-2xl font-bold tracking-tight text-text-main-light dark:text-text-main-dark">Library OS</h2>
+          <h2 className="text-2xl font-bold tracking-tight text-text-main-light dark:text-text-main-dark">Librarizz</h2>
         </div>
 
         {/* Segmented Control (Login / Register Toggle) */}
@@ -180,7 +180,7 @@ export default function Login({ setUser }) {
         <div className="absolute bottom-0 left-0 right-0 p-12 xl:p-24">
           <blockquote className="space-y-6 max-w-lg">
             <div className="rounded-full bg-primary/20 backdrop-blur-sm px-4 py-1 w-fit border border-white/10">
-              <span className="text-sm font-semibold text-white tracking-wide uppercase">Library OS</span>
+              <span className="text-sm font-semibold text-white tracking-wide uppercase">Librarizz</span>
             </div>
             <p className="text-3xl font-bold leading-relaxed text-white">
               "The only thing that you absolutely have to know, is the location of the library."
