@@ -16,13 +16,20 @@ export default function Login({ setUser }) {
     setError("");
     setLoading(true);
     try {
+      console.log("📤 Sending login request with:", { email, password });
       const res = await API.post("/api/auth/login", { email, password });
+      console.log("✅ Login response:", res);
+      console.log("📦 User data:", res.data.data.user);
+      console.log("🔐 Token:", res.data.data.token);
+      
       localStorage.setItem("user", JSON.stringify(res.data.data.user));
       localStorage.setItem("token", res.data.data.token);
       setToken(res.data.data.token);
       setUser(res.data.data.user);
       navigate("/");
-    } catch {
+    } catch (error) {
+      console.error("❌ Login error:", error);
+      console.error("Error response:", error.response?.data);
       setError("Invalid email or password");
     } finally {
       setLoading(false);
