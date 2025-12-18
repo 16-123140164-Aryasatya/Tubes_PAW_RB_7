@@ -35,7 +35,6 @@ export default function Login({ setUser }) {
         {/* Header / Logo */}
         <div className="flex items-center gap-2 mb-10">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary flex-shrink-0">
-            <span className="material-symbols-outlined text-2xl leading-none">local_library</span>
           </div>
           <h2 className="text-2xl font-bold tracking-tight text-text-main-light dark:text-text-main-dark whitespace-nowrap">Librarizz</h2>
         </div>
