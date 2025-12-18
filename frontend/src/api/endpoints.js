@@ -1,8 +1,9 @@
 import { api } from "./client";
 
 export const AuthAPI = {
-  login: (payload) => api.post("/api/login", payload),
-  register: (payload) => api.post("/api/register", payload),
+  login: (payload) => api.post("/api/auth/login", payload),
+  register: (payload) => api.post("/api/auth/register", payload),
+  me: () => api.get("/api/auth/me"),
 };
 
 export const BooksAPI = {
