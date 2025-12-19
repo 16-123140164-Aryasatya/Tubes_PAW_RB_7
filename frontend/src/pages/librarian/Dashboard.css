@@ -1,0 +1,467 @@
+/*
+ * Dashboard page specific styles
+ * Manages the layout and components for the librarian dashboard
+ */
+
+/* Dashboard Layouts */
+.dashWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.statTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.statExtra {
+  margin-top: 8px;
+}
+
+.warnText {
+  font-size: 12px;
+  color: var(--red);
+  font-weight: 600;
+}
+
+.mainGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.rightCol {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Transaction Table */
+.txHead {
+  display: grid;
+  grid-template-columns: 2.5fr 1.2fr 1fr 0.8fr 0.5fr;
+  gap: 12px;
+  padding: 14px 20px;
+  background: linear-gradient(90deg, #f8fafc 0%, #f1f5f9 100%);
+  border-bottom: 2px solid var(--border);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.txRow {
+  display: grid;
+  grid-template-columns: 2.5fr 1.2fr 1fr 0.8fr 0.5fr;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  transition: background-color 200ms ease;
+  align-items: center;
+}
+
+.txRow:hover {
+  background: var(--blue-soft);
+}
+
+.txBook {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bookCover {
+  width: 40px;
+  height: 56px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.cover-blue {
+  background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+}
+
+.cover-teal {
+  background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+}
+
+.cover-yellow {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.cover-gray {
+  background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+}
+
+.txTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.txSub {
+  font-size: 12px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot {
+  font-size: 8px;
+  color: var(--text-tertiary);
+}
+
+.txCell {
+  font-size: 14px;
+  color: var(--text);
+}
+
+.txAction {
+  font-size: 18px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  text-align: center;
+}
+
+.pill {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.pill-green {
+  background: var(--green-light);
+  color: var(--green);
+}
+
+.pill-red {
+  background: var(--red-light);
+  color: var(--red);
+}
+
+.pill-yellow {
+  background: #fef3c7;
+  color: var(--yellow);
+}
+
+.pill-gray {
+  background: #f1f5f9;
+  color: var(--text-secondary);
+}
+
+/* Borrow Requests */
+.borrowList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+}
+
+.borrowCard {
+  background: var(--blue-soft);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.borrowHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.borrowUser {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.photo {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue) 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.borrowName {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.borrowTime {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.roleTag {
+  background: var(--blue-light);
+  color: var(--blue);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.borrowBody {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bookThumb {
+  width: 32px;
+  height: 44px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+  flex-shrink: 0;
+}
+
+.borrowBook {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.borrowMeta {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.borrowActions {
+  display: flex;
+  gap: 8px;
+}
+
+.btnSoft {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.btnSoft-green {
+  background: var(--green-light);
+  color: var(--green);
+}
+
+.btnSoft-green:hover {
+  background: #bbf7d0;
+}
+
+.btnSoft-red {
+  background: var(--red-light);
+  color: var(--red);
+}
+
+.btnSoft-red:hover {
+  background: #fecaca;
+}
+
+/* Status Bar */
+.statusBar {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Hero Buttons */
+.heroBtns {
+  display: flex;
+  gap: 10px;
+}
+
+.heroDate {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.btnPrimary {
+  background: var(--blue);
+  color: white;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 200ms ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.btnPrimary:hover {
+  background: #0052a3;
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* Modal Styles */
+.mBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.mModal {
+  background: white;
+  border-radius: 12px;
+  width: min(500px, 90%);
+  box-shadow: var(--shadow-lg);
+  animation: modalSlideIn 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mHead {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(90deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 12px 12px 0 0;
+}
+
+.mTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.mClose {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: color 200ms ease;
+  padding: 0;
+  box-shadow: none;
+}
+
+.mClose:hover {
+  color: var(--text);
+}
+
+.mBody {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mLabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mInput {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 200ms ease;
+  background: white;
+}
+
+.mInput:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+}
+
+.mActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.btnGhost2 {
+  flex: 1;
+  background: #e9ecef;
+  color: var(--text);
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.btnGhost2:hover {
+  background: #dee2e6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .mainGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .txHead, .txRow {
+    grid-template-columns: 2fr 1fr 1fr 0.8fr 0.5fr;
+    font-size: 11px;
+  }
+}
