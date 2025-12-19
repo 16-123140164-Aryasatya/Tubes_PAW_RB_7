@@ -1,47 +1,71 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import "../styles.css";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../auth/AuthContext";
 
-export default function Navbar({ user, setUser }) {
+export default function Navbar() {
+  const { isAuthed, user, role, logout } = useAuth();
   const navigate = useNavigate();
 
-  const logout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    setUser(null);
+  function onLogout() {
+    logout();
     navigate("/");
-  };
+  }
 
   return (
-    <header className="navbar">
-      <div className="nav-container">
-        <Link to="/" className="logo">
-          📚 LibrarySystem
+    <header className="nav">
+      <div className="container nav-inner">
+        <Link className="brand" to="/">
+          LibManager
         </Link>
 
-        <nav>
-          {!user ? (
+        <nav className="nav-links">
+          <NavLink to="/books" className={({ isActive }) => (isActive ? "active" : "")}>
+            Books
+          </NavLink>
+
+          {role === "librarian" && (
             <>
-              <Link to="/login" className="nav-link">
-                Login
-              </Link>
-              <Link to="/register" className="nav-btn">
-                Register
-              </Link>
-            </>
-          ) : (
-            <>
-              {user.role === "librarian" && (
-                <Link to="/dashboard" className="nav-link">
-                  Dashboard
-                </Link>
-              )}
-              <button onClick={logout} className="nav-btn danger">
-                Logout
-              </button>
+              <NavLink to="/librarian" className={({ isActive }) => (isActive ? "active" : "")}>
+                Librarian
+              </NavLink>
+              <NavLink
+                to="/librarian/books"
+                className={({ isActive }) => (isActive ? "active" : "")}
+              >
+                Manage Books
+              </NavLink>
+              <NavLink
+                to="/librarian/borrows"
+                className={({ isActive }) => (isActive ? "active" : "")}
+              >
+                Borrow Requests
+              </NavLink>
             </>
           )}
         </nav>
+
+        <div className="nav-actions">
+          {isAuthed ? (
+            <>
+              <div className="nav-user">
+                <div className="nav-user-name">{user?.name ?? "User"}</div>
+                <div className="nav-user-role">{role}</div>
+              </div>
+              <button className="btn" onClick={onLogout}>
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link className="btn" to="/login">
+                Login
+              </Link>
+              <Link className="btn btn-primary" to="/register">
+                Register
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </header>
   );

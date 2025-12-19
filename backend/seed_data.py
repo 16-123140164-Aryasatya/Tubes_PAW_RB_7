@@ -4,13 +4,27 @@ Script to seed initial data into database
 from app.models import DBSession, User, Book, UserRole, Base
 from sqlalchemy import create_engine
 from pyramid.paster import get_appsettings
+import os
 import transaction
 
 def seed_database():
-    """Seed database with initial data"""
-    
+    """Seed database with initial data.
+
+    This function creates a SQLAlchemy engine based on the
+    configuration.  It first checks for a ``DATABASE_URL`` environment
+    variable (commonly provided by hosting platforms such as Railway)
+    and uses that when present.  Otherwise it falls back to the
+    ``sqlalchemy.url`` setting in ``development.ini``.  When the
+    connection fails it will raise an exception rather than silently
+    falling back to SQLite; seed data should only be inserted into the
+    intended database.
+    """
+
+    # Read settings from the development.ini file
     settings = get_appsettings('development.ini')
-    engine = create_engine(settings['sqlalchemy.url'])
+    # Prefer DATABASE_URL environment variable
+    db_url = os.getenv('DATABASE_URL') or settings.get('sqlalchemy.url')
+    engine = create_engine(db_url)
     DBSession.configure(bind=engine)
     Base.metadata.bind = engine
     Base.metadata.create_all(engine)

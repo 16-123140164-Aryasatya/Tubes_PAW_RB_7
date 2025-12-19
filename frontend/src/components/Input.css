@@ -1,0 +1,50 @@
+/*
+ * Input component styles
+ *
+ * This stylesheet defines a small set of utility classes used by the
+ * ``Input`` component.  It ensures that text fields inside forms
+ * throughout the application share a consistent look and feel.  The
+ * colours, padding, radii and focus states derive from the global
+ * design tokens defined in ``styles/base.css``.  When errors are
+ * present an alternate border colour is applied.
+ */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--muted);
+}
+
+.input {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px;
+  font-size: 14px;
+  background: var(--panel);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Focus state draws attention with a coloured outline and subtle box shadow */
+.input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+}
+
+/* Error state uses the shared red accent */
+.input-error {
+  border-color: var(--red);
+}
+
+.error {
+  font-size: 12px;
+  color: var(--red);
+}

@@ -43,7 +43,11 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    url = config.get_main_option("sqlalchemy.url")
+    # Prefer the DATABASE_URL environment variable when running
+    # migrations.  This allows deploying to platforms like Railway
+    # without hardcoding the connection string in alembic.ini.  If
+    # DATABASE_URL is not set, fall back to the sqlalchemy.url value.
+    url = os.getenv('DATABASE_URL') or config.get_main_option("sqlalchemy.url")
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -62,8 +66,14 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
+    # When creating the engine, override the URL with DATABASE_URL if
+    # present.  Otherwise the URL from alembic.ini is used.
+    section = config.get_section(config.config_ini_section, {}).copy()
+    db_url = os.getenv('DATABASE_URL') or section.get('sqlalchemy.url')
+    if db_url:
+        section['sqlalchemy.url'] = db_url
     connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
+        section,
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )

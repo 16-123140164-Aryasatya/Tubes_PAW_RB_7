@@ -1,0 +1,270 @@
+/* Wrap login and register pages in the same palette as the rest of the app */
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Use the global background variable instead of a purple gradient */
+  background: var(--bg);
+  padding: 2rem 1rem;
+}
+
+.login-card {
+  /* Use panel colour and line border to match the dashboard cards */
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  max-width: 600px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.login-header {
+  /* Use a solid primary colour for a simpler header */
+  background: var(--blue);
+  color: #ffffff;
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+
+.login-icon {
+  /* Remove default icon spacing; icons are not used */
+  font-size: 3rem;
+  margin-bottom: 0;
+  display: none;
+}
+
+.login-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+}
+
+.login-subtitle {
+  font-size: 1rem;
+  margin: 0;
+  opacity: 0.95;
+}
+
+.login-form {
+  padding: 2rem;
+}
+
+/* Role Selector */
+.role-selector {
+  margin-bottom: 2rem;
+}
+
+.role-label {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+.role-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.role-btn {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--panel);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.role-btn:hover {
+  border-color: var(--blue);
+  background: var(--blueSoft);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+.role-btn.active {
+  border-color: var(--blue);
+  background: var(--blueSoft);
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+}
+
+.role-icon {
+  font-size: 2.5rem;
+  flex-shrink: 0;
+}
+
+.role-info {
+  flex: 1;
+}
+
+.role-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.25rem;
+}
+
+.role-desc {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+/* Info Box */
+/* Info box uses palette colours for consistency */
+.info-box {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--blueSoft);
+  border-left: 4px solid var(--blue);
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.info-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.info-content {
+  flex: 1;
+  font-size: 0.875rem;
+  color: var(--text);
+}
+
+.info-content strong {
+  display: block;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+/* Feature list uses a muted green to denote positive features */
+.features-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--green);
+}
+
+/* Form Fields */
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+}
+
+.form-input::placeholder {
+  color: var(--muted);
+}
+
+/* Submit Button */
+/* Submit button uses primary colour palette */
+.submit-btn {
+  width: 100%;
+  padding: 1rem;
+  background: var(--blue);
+  color: #ffffff;
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(29, 78, 216, 0.3);
+}
+
+.submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(29, 78, 216, 0.4);
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Footer */
+/* Footer uses panel palette */
+.login-footer {
+  padding: 1.5rem 2rem;
+  background: var(--panel);
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+
+.login-footer p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.login-footer strong {
+  color: var(--text);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .login-container {
+    padding: 1rem;
+  }
+
+  .login-card {
+    max-width: 100%;
+  }
+
+  .login-header {
+    padding: 2rem 1.5rem;
+  }
+
+  .login-title {
+    font-size: 1.5rem;
+  }
+
+  .login-form {
+    padding: 1.5rem;
+  }
+
+  .role-icon {
+    font-size: 2rem;
+  }
+
+  .role-name {
+    font-size: 1rem;
+  }
+
+  .features-list {
+    grid-template-columns: 1fr;
+  }
+}

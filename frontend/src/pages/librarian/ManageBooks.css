@@ -1,0 +1,57 @@
+/*
+ * Styles for the Manage Books page in the librarian dashboard.
+ * This stylesheet brings the table layout in line with the rest of
+ * the application by using a grid for columns, consistent padding
+ * and muted header colours.  It also ensures rows are separated by
+ * subtle lines and that action buttons have appropriate spacing.
+ */
+
+.table {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+}
+
+.thead,
+.trow {
+  display: grid;
+  /* Allocate more space to the title column, then author, stock and actions */
+  grid-template-columns: 2.5fr 1.5fr 0.8fr 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.thead {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  padding: 12px 6px;
+  border-bottom: 1px solid var(--line);
+}
+
+.trow {
+  padding: 16px 6px;
+  /* Use the shared line colour for row separators instead of a custom shade */
+  border-bottom: 1px solid var(--line);
+}
+
+.trow div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Align the action buttons horizontally with a small gap */
+.trow .row {
+  display: flex;
+  gap: 6px;
+}
+
+/* Hint text below the form within the Manage Books modal.  Use a
+ * small font and the muted colour to de‑emphasise advisory text.
+ */
+.hint {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}

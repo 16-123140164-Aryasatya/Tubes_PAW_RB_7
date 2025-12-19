@@ -1,12 +1,39 @@
-pyramid==2.0.2
-pyramid-tm==2.5
-pyramid-retry==2.1.1
-SQLAlchemy==2.0.23
+#
+# Requirements for the Pyramid backend.  These packages are required
+# to run the backend defined in ``backend/app``.  They match the
+# dependencies declared in setup.py and are consistent with the UAS
+# specification (Python Pyramid, SQLAlchemy, PostgreSQL, Alembic).
+
+# Pyramid web framework
+pyramid
+pyramid-tm
+
+# Database ORM and driver
+SQLAlchemy
 psycopg2-binary
-alembic==1.13.0
-bcrypt==4.1.2
-PyJWT==2.8.0
-python-dotenv==1.0.0
-waitress==2.1.2
-zope.sqlalchemy==3.1
-transaction==5.0
+
+# Database migrations
+alembic
+
+# Pyramid integrates SQLAlchemy with transaction management via
+# ``zope.sqlalchemy``.  This dependency is explicitly added here because
+# it is not pulled in automatically by Pyramid.  Without it, running
+# Alembic migrations or importing models will result in a
+# ``ModuleNotFoundError: No module named 'zope.sqlalchemy'``.  See
+# https://docs.pylonsproject.org/projects/pyramid/en/latest/narr/transactions.html
+zope.sqlalchemy
+
+# Password hashing
+bcrypt
+
+# JWT authentication
+PyJWT
+
+# Environment variable parsing
+python-dotenv
+
+# Production WSGI server
+waitress
+
+# Testing (optional)
+pytest
