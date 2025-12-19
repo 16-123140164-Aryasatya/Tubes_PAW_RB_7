@@ -1,10 +1,11 @@
 import React from "react";
+import BookCover from "../../components/BookCover";
 import { useLibrary } from "../../store/LibraryStore";
 import "./Transactions.css";
 
 export default function Transactions() {
   // Pull transactions and helper actions from the library context
-  const { transactions, books, returnBook, payFine } = useLibrary();
+  const { transactions, books, quickReturn } = useLibrary();
 
   return (
     <div className="transWrap">
@@ -15,7 +16,7 @@ export default function Transactions() {
         </div>
         <div className="transStats">
           <div className="miniStat">
-            <div className="miniVal">{transactions.filter(t => t.status === "Borrowed").length}</div>
+            <div className="miniVal">{transactions.filter(t => t.status === "Active").length}</div>
             <div className="miniLabel">Active</div>
           </div>
           <div className="miniStat">
@@ -67,22 +68,16 @@ export default function Transactions() {
           // Format due date for readability
           const dueStr = t.due ? new Date(t.due).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) : "-";
 
-          // Determine if a fine exists and whether it has been paid
-          const hasFine = t.fine && t.fine > 0;
-          const finePaid = t.finePaid;
-
           // Handlers for actions
           const onReturn = () => {
-            returnBook(t.id);
-          };
-          const onPayFine = () => {
-            payFine(t.id);
+            // Use quickReturn with bookId to return active/overdue borrowing
+            quickReturn(t.bookId);
           };
 
           return (
             <div className="txRow" key={t.id}>
               <div className="txBook">
-                <div className={`bookCover cover-${coverTone}`} />
+                <BookCover size="xs" />
                 <div>
                   <div className="txTitle">{title}</div>
                   <div className="txSub">
@@ -100,16 +95,9 @@ export default function Transactions() {
                 {t.status !== "Returned" ? (
                   <div className="txActions">
                     <button className="txBtn txBtn-primary" onClick={onReturn}>✓ Return</button>
-                    {hasFine && !finePaid && (
-                      <button className="txBtn txBtn-warning" onClick={onPayFine}>$ Collect</button>
-                    )}
                   </div>
                 ) : (
-                  hasFine && !finePaid ? (
-                    <button className="txBtn txBtn-warning" onClick={onPayFine}>$ Collect</button>
-                  ) : (
-                    <span className="txEmpty">—</span>
-                  )
+                  <span className="txEmpty">—</span>
                 )}
               </div>
             </div>

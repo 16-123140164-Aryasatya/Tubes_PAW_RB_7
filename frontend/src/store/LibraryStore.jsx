@@ -16,6 +16,7 @@ export function LibraryProvider({ children }) {
   const [books, setBooks] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [requests, setRequests] = useState([]);
+  const [returnRequests, setReturnRequests] = useState([]);
 
   /**
    * Load books from the backend.  On success the books array will
@@ -46,11 +47,8 @@ export function LibraryProvider({ children }) {
    * Load borrowings from the backend and map them into the
    * `transactions` array expected by the UI.  Each transaction
    * contains: id, bookId, borrower name, due date string and status
-   * (Active, Overdue, Returned).  Requests are derived from active
-   * borrowings and stored in the `requests` array for backward
-   * compatibility.  In this simplified implementation the library
-   * does not distinguish between pending and approved requests, so
-   * active borrowings are used to populate the requests list.
+   * (Active, Overdue, Returned).  Requests are borrow requests (PENDING from creation),
+   * while returnRequests are return requests (PENDING from return action).
    */
   async function loadBorrowings() {
     try {
@@ -59,7 +57,9 @@ export function LibraryProvider({ children }) {
       const data = res.data?.data || res.data?.borrowings || res.data || [];
       const items = Array.isArray(data) ? data : [];
       const txs = [];
-      const reqs = [];
+      const borrowReqs = [];
+      const returnReqs = [];
+      
       items.forEach((br) => {
         // Derive status: backend returns status in br.status if implemented,
         // otherwise derive from return_date/due_date
@@ -73,9 +73,18 @@ export function LibraryProvider({ children }) {
         } else {
           status = "returned";
         }
+        
+        // Untuk menentukan apakah ini borrow request atau return request,
+        // gunakan indikator: status PENDING + return_date terisi => return request
+        // status PENDING + return_date kosong => borrow request
+        const isPending = String(status).toLowerCase() === "pending";
+        const isReturnPending = isPending && !!br.return_date;
+        const isBorrowPending = isPending && !br.return_date;
+        
         // Normalize status to Title case for UI
         const statusDisplay =
-          status === "overdue" ? "Overdue" : status === "active" ? "Active" : "Returned";
+          status === "overdue" ? "Overdue" : status === "active" ? "Active" : status === "pending" ? "Pending" : "Returned";
+        
         txs.push({
           id: br.id,
           bookId: br.book?.id || br.book_id,
@@ -83,19 +92,38 @@ export function LibraryProvider({ children }) {
           due: br.due_date ? new Date(br.due_date).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) : "-",
           status: statusDisplay,
         });
-        // Populate requests list with active borrowings for the dashboard
-        if (statusDisplay === "Active" || statusDisplay === "Overdue") {
-          reqs.push({
+        
+        // Populate requests list with PENDING borrowings (borrow approval requests)
+        if (isBorrowPending) {
+          borrowReqs.push({
             id: br.id,
             name: br.member?.name || br.member?.email || "-",
             role: br.member?.role || "Member",
             time: br.borrow_date ? new Date(br.borrow_date).toLocaleDateString() : "-",
             bookId: br.book?.id || br.book_id,
+            type: "borrow",
           });
         }
+        if (isReturnPending) {
+          returnReqs.push({
+            id: br.id,
+            name: br.member?.name || br.member?.email || "-",
+            role: br.member?.role || "Member",
+            time: br.return_date ? new Date(br.return_date).toLocaleDateString() : "-",
+            bookId: br.book?.id || br.book_id,
+            type: "return",
+          });
+        }
+        
+        // Note: Return requests juga PENDING, tapi ini butuh cara untuk membedakan
+        // Solusi: kita bisa track di UI component atau backend return field
+        // Untuk sekarang, kita ambil dari backend calculate
+        // Client akan handle di component level nanti
       });
+      
       setTransactions(txs);
-      setRequests(reqs);
+      setRequests(borrowReqs);
+      setReturnRequests(returnReqs);
     } catch (e) {
       console.error("Failed to load borrowings", normalizeError(e));
     }
@@ -235,11 +263,37 @@ export function LibraryProvider({ children }) {
     }
   }
 
+  /**
+   * Approve a return request. Sets the borrowing status to RETURNED
+   * and calculates fine if overdue.
+   */
+  async function approveReturn(returnReqId) {
+    try {
+      await BorrowAPI.approveReturn(returnReqId);
+      await loadBorrowings();
+    } catch (e) {
+      console.error("Failed to approve return", normalizeError(e));
+    }
+  }
+
+  /**
+   * Deny a return request. Sets the borrowing status back to ACTIVE.
+   */
+  async function denyReturn(returnReqId) {
+    try {
+      await BorrowAPI.denyReturn(returnReqId);
+      await loadBorrowings();
+    } catch (e) {
+      console.error("Failed to deny return", normalizeError(e));
+    }
+  }
+
   const value = useMemo(
     () => ({
       books,
       transactions,
       requests,
+      returnRequests,
       stats,
       addBook,
       updateBook,
@@ -247,8 +301,10 @@ export function LibraryProvider({ children }) {
       approveRequest,
       denyRequest,
       quickReturn,
+      approveReturn,
+      denyReturn,
     }),
-    [books, transactions, requests, stats]
+    [books, transactions, requests, returnRequests, stats]
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

@@ -1,10 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
+import BookCover from "../../components/BookCover";
 import { Link } from "react-router-dom";
 import "./user_dashboard.css";
 import { BorrowAPI, BooksAPI } from "../../api/endpoints";
 import { normalizeError } from "../../api/client";
 import { useToast } from "../../components/Toast";
 import { useAuth } from "../../auth/AuthContext";
+import Loading from "../../components/Loading";
 
 /**
  * UserDashboard provides an overview for members.  It displays
@@ -19,6 +21,8 @@ const UserDashboard = () => {
   const [borrowings, setBorrowings] = useState([]);
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [returningId, setReturningId] = useState(null);
+  const [showLoading, setShowLoading] = useState(false);
 
   // Load active borrowings and books on mount
   useEffect(() => {
@@ -33,7 +37,13 @@ const UserDashboard = () => {
         const brData = brRes.data?.data || brRes.data?.borrowings || brRes.data || [];
         const bookData = booksRes.data?.data || booksRes.data?.books || booksRes.data || [];
         if (alive) {
-          setBorrowings(Array.isArray(brData) ? brData : []);
+          // Only show borrowings that are already active. Pending requests
+          // cannot be returned yet and would trigger backend 400 responses.
+          const normalized = Array.isArray(brData) ? brData : [];
+          const activeOnly = normalized.filter((br) =>
+            (br.status || "").toString().toLowerCase() !== "pending"
+          );
+          setBorrowings(activeOnly);
           setBooks(Array.isArray(bookData) ? bookData : []);
         }
       } catch (e) {
@@ -54,9 +64,12 @@ const UserDashboard = () => {
     return borrowings.map((br) => {
       const book = br.book || {};
       const dueDate = br.due_date ? new Date(br.due_date) : null;
+      const statusLabel = (br.status || "").toString().toLowerCase();
       const diffDays = dueDate ? Math.ceil((dueDate - now) / (1000 * 60 * 60 * 24)) : 0;
       let status;
-      if (!br.return_date) {
+      if (statusLabel === "pending") {
+        status = "pending";
+      } else if (!br.return_date) {
         if (dueDate && dueDate < now) status = "urgent";
         else status = "ok";
       } else {
@@ -69,7 +82,7 @@ const UserDashboard = () => {
         dueDate: dueDate ? dueDate.toLocaleDateString() : "-",
         dueDays: diffDays,
         status,
-        coverUrl: book.cover_image || "",
+        coverUrl: "",
         canRenew: false, // renew not implemented
       };
     });
@@ -89,7 +102,7 @@ const UserDashboard = () => {
         id: b.id,
         title: b.title,
         author: b.author || "",
-        coverUrl: b.cover_image || "",
+        coverUrl: "",
         statusLabel: availCount > 0 ? "Available Now" : "Waitlist",
         statusType: availCount > 0 ? "available" : "waitlist",
       };
@@ -120,16 +133,32 @@ const UserDashboard = () => {
   // Return a book from dashboard
   async function returnBook(borrowingId) {
     try {
+      setReturningId(borrowingId);
+      setShowLoading(true);
       await BorrowAPI.returnBook(borrowingId);
-      toast.push("Book returned", "success");
-      setBorrowings((prev) => prev.filter((b) => b.id !== borrowingId));
+      toast.push("Permintaan pengembalian dikirim, menunggu konfirmasi librarian", "success");
+      // Refetch untuk sinkronisasi
+      const res = await BorrowAPI.my();
+      const data = res.data?.data || res.data?.borrowings || res.data || [];
+      const normalized = Array.isArray(data) ? data : [];
+      const activeOnly = normalized.filter((br) =>
+        (br.status || "").toString().toLowerCase() !== "pending"
+      );
+      setBorrowings(activeOnly);
     } catch (e) {
       toast.push(normalizeError(e), "error");
+    } finally {
+      setReturningId(null);
+      setTimeout(() => {
+        setShowLoading(false);
+      }, 1500);
     }
   }
 
   return (
     <>
+      {showLoading && <Loading label="Memproses permintaan pengembalian..." fullScreen />}
+      
       <div className="dashboard-header">
         <div className="dashboard-header-content">
           <div>
@@ -148,10 +177,10 @@ const UserDashboard = () => {
             </svg>
           </div>
           <div>
-            <p className="stat-label">Active Loans</p>
+            <p className="stat-label">Currently Borrowed</p>
             <p className="stat-value">{totalBorrowed} <span>books</span></p>
           </div>
-        </div>
+          </div>
         <div className="stat-item stat-orange">
           <div className="stat-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -198,10 +227,7 @@ const UserDashboard = () => {
             ) : (
               enrichedBorrowings.map((book) => (
                 <div key={book.id} className="book-card">
-                  <div
-                    className="book-cover"
-                    style={{ backgroundImage: book.coverUrl ? `url(${book.coverUrl})` : undefined }}
-                  />
+                  <BookCover src={book.coverUrl} size="md" />
                   <div className="book-details">
                     <div>
                       <div className="book-header">
@@ -215,8 +241,16 @@ const UserDashboard = () => {
                       <button className="btn-primary" disabled>
                         Renew
                       </button>
-                      <button className="btn-secondary" onClick={() => returnBook(book.id)}>
-                        Return
+                      <button
+                        className="btn-secondary"
+                        disabled={book.status === "pending" || returningId === book.id}
+                        onClick={() => returnBook(book.id)}
+                        style={{
+                          opacity: returningId === book.id ? 0.7 : 1,
+                          cursor: returningId === book.id ? 'wait' : 'pointer'
+                        }}
+                      >
+                        {returningId === book.id ? "⏳ Processing..." : book.status === "pending" ? "Pending approval" : "Return"}
                       </button>
                     </div>
                   </div>
@@ -247,10 +281,7 @@ const UserDashboard = () => {
               ) : (
                 newArrivals.map((book) => (
                   <a key={book.id} href={`/user/book/${book.id}`} className="arrival-card">
-                    <div
-                      className="arrival-cover"
-                      style={{ backgroundImage: book.coverUrl ? `url(${book.coverUrl})` : undefined }}
-                    />
+                    <BookCover src={book.coverUrl} size="sm" />
                     <div className="arrival-info">
                       <h4>{book.title}</h4>
                       <p className="arrival-author">{book.author}</p>

@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import BookCover from "../../components/BookCover";
 import "./catalog.css";
 import { Link } from "react-router-dom";
 // Import API helpers from the main src.  Because the ui_user folder lives
@@ -7,20 +8,19 @@ import { Link } from "react-router-dom";
 import { BooksAPI, BorrowAPI } from "../../api/endpoints";
 import { normalizeError } from "../../api/client";
 import { useToast } from "../../components/Toast";
+import Loading from "../../components/Loading";
 
-/**
- * Catalog page for members.  Fetches the list of books from the backend
- * and allows the user to search, filter by category, view availability
- * and borrow a book directly.  This replaces the static mock
- * implementation with real API calls.
- */
-const Catalog = () => {
+function Catalog() {
   const toast = useToast();
   const [books, setBooks] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [availableOnly, setAvailableOnly] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [borrowingId, setBorrowingId] = useState(null); // track book being requested
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [showLoading, setShowLoading] = useState(false);
 
   // Fetch books on mount
   useEffect(() => {
@@ -90,14 +90,35 @@ const Catalog = () => {
   // Borrow a book; calls backend and updates local state
   async function borrowBook(bookId) {
     try {
+      setBorrowingId(bookId);
+      setShowLoading(true);
+      setModalMessage("Permintaan peminjaman sedang diproses...");
+      setShowModal(true);
       await BorrowAPI.request({ book_id: bookId });
-      toast.push("Book borrowed successfully", "success");
-      // refresh the single book to get new availability
-      const res = await BooksAPI.detail(bookId);
-      const updated = res.data?.data || res.data?.book || res.data;
-      setBooks((prev) => prev.map((b) => (b.id === updated.id ? updated : b)));
+      setModalMessage("✓ Permintaan peminjaman dikirim!\nMenunggu persetujuan librarian");
+      setTimeout(() => {
+        setShowModal(false);
+        setShowLoading(false);
+        // refresh the single book to get new availability
+        (async () => {
+          try {
+            const res = await BooksAPI.detail(bookId);
+            const updated = res.data?.data || res.data?.book || res.data;
+            setBooks((prev) => prev.map((b) => (b.id === updated.id ? updated : b)));
+          } catch (e) {
+            console.error("Failed to refresh book", e);
+          }
+        })();
+      }, 2000);
     } catch (e) {
+      setModalMessage(`✗ Gagal: ${normalizeError(e)}`);
+      setTimeout(() => {
+        setShowModal(false);
+        setShowLoading(false);
+      }, 3000);
       toast.push(normalizeError(e), "error");
+    } finally {
+      setBorrowingId(null);
     }
   }
 
@@ -116,6 +137,40 @@ const Catalog = () => {
 
   return (
     <div className="catalog-container">
+      {showLoading && <Loading label="Memproses permintaan peminjaman..." fullScreen />}
+      
+      {/* Notification Modal */}
+      {showModal && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0,0,0,0.5)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 9999,
+        }}>
+          <div style={{
+            backgroundColor: "#fff",
+            borderRadius: "12px",
+            padding: "32px",
+            textAlign: "center",
+            minWidth: "300px",
+            boxShadow: "0 10px 40px rgba(0,0,0,0.2)",
+          }}>
+            <div style={{ fontSize: "48px", marginBottom: "16px" }}>
+              ⏳
+            </div>
+            <div style={{ fontSize: "18px", fontWeight: "600", whiteSpace: "pre-wrap", lineHeight: "1.6" }}>
+              {modalMessage}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Hero section with search */}
       <div className="catalog-hero">
         <div className="hero-content">
@@ -172,18 +227,8 @@ const Catalog = () => {
             const badge = getStatusBadge(book);
             return (
               <div key={book.id} className="book-card">
-                <div
-                  className="book-cover"
-                  style={{ backgroundImage: book.cover_image ? `url(${book.cover_image})` : undefined }}
-                >
-                  {!book.cover_image && (
-                    <div className="book-cover-placeholder">
-                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                      </svg>
-                    </div>
-                  )}
+                <div className="book-cover">
+                  <div className="book-cover-placeholder" />
                 </div>
                 <div className="book-details">
                   <div className="book-header">
@@ -199,8 +244,16 @@ const Catalog = () => {
                       Preview
                     </a>
                     {badge.label === "Available" && (
-                      <button className="btn-primary" onClick={() => borrowBook(book.id)}>
-                        Borrow
+                      <button
+                        className="btn-primary"
+                        onClick={() => borrowBook(book.id)}
+                        disabled={borrowingId === book.id}
+                        style={{ 
+                          opacity: borrowingId === book.id ? 0.7 : 1,
+                          cursor: borrowingId === book.id ? 'wait' : 'pointer'
+                        }}
+                      >
+                        {borrowingId === book.id ? "⏳ Memproses..." : "Borrow"}
                       </button>
                     )}
                   </div>

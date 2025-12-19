@@ -7,7 +7,6 @@ export default function Members() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
-  const [deleting, setDeleting] = useState(null);
   const [viewMode, setViewMode] = useState("grid"); // "grid" or "list"
 
   useEffect(() => {
@@ -37,23 +36,6 @@ export default function Members() {
       String(u.id || "").toLowerCase().includes(s)
     );
   }, [users, q]);
-
-  const handleDelete = async (userId, userName) => {
-    if (!window.confirm(`Hapus member "${userName}"? Tindakan ini tidak dapat dibatalkan.`)) {
-      return;
-    }
-
-    setDeleting(userId);
-    try {
-      await UserAPI.delete(userId);
-      setUsers(users.filter((u) => (u.id || u._id) !== userId));
-    } catch (e) {
-      console.error("Failed to delete user", normalizeError(e));
-      alert("Gagal menghapus member: " + normalizeError(e));
-    } finally {
-      setDeleting(null);
-    }
-  };
 
   const getMemberInitials = (name) => {
     return name
@@ -145,14 +127,6 @@ export default function Members() {
                   {(u.role || "").toLowerCase() === "librarian" ? "Librarian" : "Member"}
                 </span>
               </div>
-
-              <button
-                onClick={() => handleDelete(u.id || u._id, u.name)}
-                disabled={deleting !== null}
-                className="memberDeleteBtn"
-              >
-                {deleting === (u.id || u._id) ? "Menghapus..." : "Hapus"}
-              </button>
             </div>
           ))}
         </div>
@@ -162,7 +136,6 @@ export default function Members() {
             <div>Member</div>
             <div>Email</div>
             <div style={{ textAlign: "center" }}>Role</div>
-            <div style={{ textAlign: "center" }}>Aksi</div>
           </div>
 
           {filtered.map((u, idx) => (
@@ -180,16 +153,6 @@ export default function Members() {
                 <span className={`memberRoleTag ${(u.role || "").toLowerCase() === "librarian" ? "librarian" : "member"}`}>
                   {(u.role || "").toLowerCase() === "librarian" ? "Librarian" : "Member"}
                 </span>
-              </div>
-
-              <div className="membersListAction">
-                <button
-                  onClick={() => handleDelete(u.id || u._id, u.name)}
-                  disabled={deleting !== null}
-                  className="memberDeleteBtnList"
-                >
-                  {deleting === (u.id || u._id) ? "..." : "Hapus"}
-                </button>
               </div>
             </div>
           ))}

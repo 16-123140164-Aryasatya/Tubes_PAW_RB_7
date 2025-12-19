@@ -12,6 +12,7 @@ import Dashboard from "../pages/librarian/Dashboard";
 // Lazy load heavy pages for faster initial page load
 const Inventory = React.lazy(() => import("../pages/librarian/Inventory"));
 const BorrowRequests = React.lazy(() => import("../pages/librarian/BorrowRequests"));
+const Returning = React.lazy(() => import("../pages/librarian/Returning"));
 const Transactions = React.lazy(() => import("../pages/librarian/Transactions"));
 const Members = React.lazy(() => import("../pages/librarian/Members"));
 const ManageBooks = React.lazy(() => import("../pages/librarian/ManageBooks"));
@@ -47,6 +48,11 @@ export default function AppLayout() {
               <Route path="/requests" element={
                 <ProtectedRoute requiredRole="librarian">
                   <BorrowRequests />
+                </ProtectedRoute>
+              } />
+              <Route path="/returning" element={
+                <ProtectedRoute requiredRole="librarian">
+                  <Returning />
                 </ProtectedRoute>
               } />
               <Route path="/transactions" element={

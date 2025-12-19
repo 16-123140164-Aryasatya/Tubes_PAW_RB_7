@@ -34,6 +34,7 @@
   display: flex;
   align-items: center;
   color: var(--text-secondary);
+  pointer-events: none;
 }
 
 .invSearchIcon svg {
@@ -43,7 +44,7 @@
 
 .invSearchInput {
   width: 100%;
-  padding: 10px 12px 10px 40px;
+  padding: 11px 16px 11px 42px;
   border: 1px solid var(--border);
   border-radius: 8px;
   font-size: 14px;
@@ -90,14 +91,6 @@
 
 .invThumb-blue {
   background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
-}
-
-.invThumb-teal {
-  background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
-}
-
-.invThumb-purple {
-  background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
 }
 
 .invThumb-orange {

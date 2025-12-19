@@ -27,6 +27,7 @@ export default function Sidebar() {
     { to: "/", label: "Dashboard", icon: "dashboard" },
     { to: "/inventory", label: "Inventory", icon: "inventory" },
     { to: "/requests", label: "Borrow Requests", icon: "requests" },
+    { to: "/returning", label: "Returning", icon: "requests" },
     { to: "/transactions", label: "Transactions", icon: "transactions" },
     { to: "/members", label: "Members", icon: "members" },
     { to: "/manage-books", label: "Manage Books", icon: "manage" },

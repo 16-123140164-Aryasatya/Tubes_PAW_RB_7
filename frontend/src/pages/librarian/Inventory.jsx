@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useLibrary } from "../../store/LibraryStore";
+import BookCover from "../../components/BookCover";
 import "./Inventory.css";
 
 export default function Inventory() {
@@ -52,7 +53,7 @@ export default function Inventory() {
 
           return (
             <div className="invCard" key={b.id}>
-              <div className={`invThumb invThumb-${coverColor}`} />
+              <BookCover src={b.image_url || b.cover_image} size="md" />
               <div className="invInfo">
                 <div className="invBookTitle">{b.title}</div>
                 <div className="invBookSub">{b.author} • ID: #{String(b.id).replace("B", "")}</div>

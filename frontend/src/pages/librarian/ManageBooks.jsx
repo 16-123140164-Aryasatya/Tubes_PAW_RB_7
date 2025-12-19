@@ -10,6 +10,7 @@ import Button from "../../components/Button";
 import Modal from "../../components/Modal";
 import Loading from "../../components/Loading";
 import EmptyState from "../../components/EmptyState";
+import BookCover from "../../components/BookCover";
 // Bring in page-specific styles for the Manage Books grid.
 import "./ManageBooks.css";
 // Import API and store hooks.  ``BooksAPI`` exposes CRUD operations for
@@ -63,7 +64,6 @@ export default function ManageBooks() {
     category: "",
     description: "",
     copies_available: "",
-    image_url: "",
   });
 
   function setField(k, v) {
@@ -108,7 +108,6 @@ export default function ManageBooks() {
       category: book.category ?? "",
       description: book.description ?? "",
       copies_available: book.copies_available ?? book.stock ?? book.quantity ?? "",
-      image_url: book.image_url ?? book.image ?? "",
     });
     setOpen(true);
   }
@@ -192,6 +191,7 @@ export default function ManageBooks() {
         ) : (
           <div className="table">
             <div className="thead">
+              <div>Cover</div>
               <div>Title</div>
               <div>Author</div>
               <div>Stock</div>
@@ -199,6 +199,9 @@ export default function ManageBooks() {
             </div>
             {filtered.map((b) => (
               <div className="trow" key={b.id ?? b._id ?? b.title}>
+                <div>
+                  <BookCover src={b.image_url || b.cover_image || b.image} size="xs" />
+                </div>
                 <div>{b.title}</div>
                 <div>{b.author ?? "-"}</div>
                 <div>{b.copies_available ?? b.stock ?? b.quantity ?? "-"}</div>
@@ -226,21 +229,6 @@ export default function ManageBooks() {
           <Input label="Category" value={form.category} onChange={(e) => setField("category", e.target.value)} />
           <Input label="Description" value={form.description} onChange={(e) => setField("description", e.target.value)} />
           <Input label="Copies Available" value={form.copies_available} onChange={(e) => setField("copies_available", e.target.value)} />
-          <Input 
-            label="Image URL" 
-            placeholder="https://example.com/image.jpg"
-            value={form.image_url} 
-            onChange={(e) => setField("image_url", e.target.value)} 
-          />
-          {form.image_url && (
-            <div className="image-preview">
-              <img
-                src={form.image_url}
-                alt="Book Preview"
-                onError={(e) => { e.target.style.display = "none"; }}
-              />
-            </div>
-          )}
 
           <div className="modal-actions">
             <Button variant="primary" onClick={save}>

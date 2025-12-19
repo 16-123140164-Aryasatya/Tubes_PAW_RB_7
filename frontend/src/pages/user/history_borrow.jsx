@@ -27,7 +27,8 @@ const HistoryBorrow = () => {
   // Fetch borrow history and books on mount
   useEffect(() => {
     let alive = true;
-    (async () => {
+
+    const loadData = async () => {
       try {
         setLoading(true);
         const [histRes, booksRes] = await Promise.all([
@@ -37,7 +38,12 @@ const HistoryBorrow = () => {
         const histData = histRes.data?.data || histRes.data?.borrowings || histRes.data || [];
         const bookData = booksRes.data?.data || booksRes.data?.books || booksRes.data || [];
         if (alive) {
-          setHistory(Array.isArray(histData) ? histData : []);
+          // Sembunyikan entri pending dari daftar riwayat aktif untuk menghindari return 400
+          const normalizedHist = Array.isArray(histData) ? histData : [];
+          const withoutPending = normalizedHist.filter(
+            (br) => (br.status || "").toString().toLowerCase() !== "pending"
+          );
+          setHistory(withoutPending);
           setBooks(Array.isArray(bookData) ? bookData : []);
         }
       } catch (e) {
@@ -45,7 +51,9 @@ const HistoryBorrow = () => {
       } finally {
         if (alive) setLoading(false);
       }
-    })();
+    };
+
+    loadData();
     return () => {
       alive = false;
     };
@@ -76,21 +84,22 @@ const HistoryBorrow = () => {
       } else {
         status = "returned";
       }
-      // Calculate fine: assume Rp 1,000 per day late
+      // Hitung denda: Rp 5.000 per hari (sesuai backend)
+      const DAILY_FINE = 5000;
       let fine = 0;
       if (status === "overdue") {
         const daysLate = Math.floor((now - dueDate) / (1000 * 60 * 60 * 24));
-        fine = daysLate > 0 ? daysLate * 1000 : 0;
+        fine = daysLate > 0 ? daysLate * DAILY_FINE : 0;
       } else if (status === "returned" && returnDate && dueDate && returnDate > dueDate) {
         const daysLate = Math.floor((returnDate - dueDate) / (1000 * 60 * 60 * 24));
-        fine = daysLate > 0 ? daysLate * 1000 : 0;
+        fine = daysLate > 0 ? daysLate * DAILY_FINE : 0;
       }
       return {
         id: br.id,
         bookId: br.book_id,
         title: book.title || br.book_id,
         author: book.author || "",
-        coverUrl: book.cover_image || "",
+        coverUrl: "",
         borrowDate: borrowDate ? borrowDate.toLocaleDateString() : "-",
         dueDate: dueDate ? dueDate.toLocaleDateString() : "-",
         returnDate: returnDate ? returnDate.toLocaleDateString() : "-",
@@ -151,17 +160,24 @@ const HistoryBorrow = () => {
     return badges[status] || badges["returned"];
   }
 
-  // Return book from history
+  // Return book from history: gunakan API lalu refresh data agar status sesuai backend
   async function returnBook(borrowingId) {
     try {
       await BorrowAPI.returnBook(borrowingId);
-      toast.push("Book returned", "success");
-      // refresh history: remove returned borrowing or mark as returned
-      setHistory((prev) =>
-        prev.map((br) =>
-          br.id === borrowingId ? { ...br, return_date: new Date().toISOString().substring(0, 10) } : br
-        )
+      toast.push("Buku dikembalikan", "success");
+      // Refetch agar status dan denda sesuai respons backend
+      const [histRes, booksRes] = await Promise.all([
+        BorrowAPI.history(),
+        BooksAPI.list(),
+      ]);
+      const histData = histRes.data?.data || histRes.data?.borrowings || histRes.data || [];
+      const bookData = booksRes.data?.data || booksRes.data?.books || booksRes.data || [];
+      const normalizedHist = Array.isArray(histData) ? histData : [];
+      const withoutPending = normalizedHist.filter(
+        (br) => (br.status || "").toString().toLowerCase() !== "pending"
       );
+      setHistory(withoutPending);
+      setBooks(Array.isArray(bookData) ? bookData : []);
     } catch (e) {
       toast.push(normalizeError(e), "error");
     }

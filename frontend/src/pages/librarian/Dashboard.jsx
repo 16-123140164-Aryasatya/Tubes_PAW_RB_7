@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import BookCover from "../../components/BookCover";
 import { useLibrary } from "../../store/LibraryStore";
 import "./Dashboard.css";
 
@@ -16,9 +17,10 @@ function StatCard({ title, value, delta, deltaTone = "green", extra }) {
 }
 
 export default function Dashboard() {
-  const { books, transactions, requests, stats, addBook, approveRequest, denyRequest } = useLibrary();
+  const { books, transactions, requests, returnRequests, stats, addBook, approveRequest, denyRequest, approveReturn, denyReturn } = useLibrary();
 
   const [open, setOpen] = useState(false);
+  const [requestTab, setRequestTab] = useState("borrow"); // "borrow" atau "return"
   const [form, setForm] = useState({ title: "", author: "", category: "", stock: "1" });
 
   function setField(k, v) {
@@ -86,7 +88,6 @@ export default function Dashboard() {
         <StatCard title="Total Books (Stock)" value={String(stats.totalBooks)} delta="+12%" deltaTone="green" />
         <StatCard title="Books Issued" value={String(stats.issued)} delta="+5%" deltaTone="green" />
         <StatCard title="Overdue Returns" value={String(stats.overdue)} delta="+2%" deltaTone="red" extra={<div className="warnText">Requires Attention</div>} />
-        <StatCard title="Active Members" value={String(stats.members)} delta="+8%" deltaTone="green" />
       </div>
 
       <div className="mainGrid">
@@ -116,7 +117,7 @@ export default function Dashboard() {
               return (
                 <div className="txRow" key={t.id}>
                   <div className="txBook">
-                    <div className={`bookCover cover-${coverTone}`} />
+                    <BookCover size="xs" />
                     <div>
                       <div className="txTitle">{title}</div>
                       <div className="txSub">{author} <span className="dot">•</span> ID: #{id}</div>
@@ -135,52 +136,120 @@ export default function Dashboard() {
         <div className="rightCol">
           <div className="panel">
             <div className="panelHead">
-              <div className="panelTitle">Borrow Requests</div>
-              <div className="chip chip-blue" style={{ fontSize: 12, padding: "6px 10px" }}>{requests.length} New</div>
+              <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                <div className="panelTitle">Requests</div>
+              </div>
+              <div style={{ display: "flex", gap: "8px" }}>
+                <button
+                  className={`chip ${requestTab === "borrow" ? "chip-blue" : "chip-gray"}`}
+                  onClick={() => setRequestTab("borrow")}
+                  style={{ cursor: "pointer", padding: "6px 12px", fontSize: "12px" }}
+                >
+                  Borrow ({requests.length})
+                </button>
+                <button
+                  className={`chip ${requestTab === "return" ? "chip-blue" : "chip-gray"}`}
+                  onClick={() => setRequestTab("return")}
+                  style={{ cursor: "pointer", padding: "6px 12px", fontSize: "12px" }}
+                >
+                  Return ({returnRequests.length})
+                </button>
+              </div>
             </div>
 
             <div className="borrowList">
-              {requests.map((r) => {
-                const b = books.find((x) => x.id === r.bookId);
-                const meta = `${b?.category ?? "General"} • ${b?.stock > 0 ? "In Stock" : "Out of Stock"}`;
-                return (
-                  <div className="borrowCard" key={r.id}>
-                    <div className="borrowHead">
-                      <div className="borrowUser">
-                        <div className="photo">
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                          </svg>
+              {requestTab === "borrow" ? (
+                requests.length === 0 ? (
+                  <div style={{ padding: "16px", textAlign: "center", color: "#999" }}>No borrow requests</div>
+                ) : (
+                  requests.map((r) => {
+                    const b = books.find((x) => x.id === r.bookId);
+                    const meta = `${b?.category ?? "General"} • ${b?.stock > 0 ? "In Stock" : "Out of Stock"}`;
+                    return (
+                      <div className="borrowCard" key={r.id}>
+                        <div className="borrowHead">
+                          <div className="borrowUser">
+                            <div className="photo">
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                              </svg>
+                            </div>
+                            <div>
+                              <div className="borrowName">{r.name}</div>
+                              <div className="borrowTime">{r.time}</div>
+                            </div>
+                          </div>
+                          <span className="roleTag">{r.role}</span>
                         </div>
-                        <div>
-                          <div className="borrowName">{r.name}</div>
-                          <div className="borrowTime">{r.time}</div>
+
+                        <div className="borrowBody">
+                          <div className="bookThumb" />
+                          <div>
+                            <div className="borrowBook">{b?.title ?? r.bookId}</div>
+                            <div className="borrowMeta">{meta}</div>
+                          </div>
+                        </div>
+
+                        <div className="borrowActions">
+                          <button className="btnSoft btnSoft-green" onClick={() => approveRequest(r.id)}>
+                            <svg className="btn-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Approve
+                          </button>
+                          <button className="btnSoft btnSoft-red" onClick={() => denyRequest(r.id)}>Deny</button>
                         </div>
                       </div>
-                      <span className="roleTag">{r.role}</span>
-                    </div>
+                    );
+                  })
+                )
+              ) : (
+                returnRequests.length === 0 ? (
+                  <div style={{ padding: "16px", textAlign: "center", color: "#999" }}>No return requests</div>
+                ) : (
+                  returnRequests.map((r) => {
+                    const b = books.find((x) => x.id === r.bookId);
+                    return (
+                      <div className="borrowCard" key={r.id}>
+                        <div className="borrowHead">
+                          <div className="borrowUser">
+                            <div className="photo">
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                              </svg>
+                            </div>
+                            <div>
+                              <div className="borrowName">{r.name}</div>
+                              <div className="borrowTime">{r.time}</div>
+                            </div>
+                          </div>
+                          <span className="roleTag" style={{ backgroundColor: "#ff9500" }}>{r.role}</span>
+                        </div>
 
-                    <div className="borrowBody">
-                      <div className="bookThumb" />
-                      <div>
-                        <div className="borrowBook">{b?.title ?? r.bookId}</div>
-                        <div className="borrowMeta">{meta}</div>
+                        <div className="borrowBody">
+                          <div className="bookThumb" />
+                          <div>
+                            <div className="borrowBook">{b?.title ?? r.bookId}</div>
+                            <div className="borrowMeta">Return request</div>
+                          </div>
+                        </div>
+
+                        <div className="borrowActions">
+                          <button className="btnSoft btnSoft-green" onClick={() => approveReturn(r.id)}>
+                            <svg className="btn-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Approve
+                          </button>
+                          <button className="btnSoft btnSoft-red" onClick={() => denyReturn(r.id)}>Deny</button>
+                        </div>
                       </div>
-                    </div>
-
-                    <div className="borrowActions">
-                      <button className="btnSoft btnSoft-green" onClick={() => approveRequest(r.id)}>
-                        <svg className="btn-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                        Approve
-                      </button>
-                      <button className="btnSoft btnSoft-red" onClick={() => denyRequest(r.id)}>Deny</button>
-                    </div>
-                  </div>
-                );
-              })}
+                    );
+                  })
+                )
+              )}
             </div>
           </div>
 

@@ -114,21 +114,3 @@
   width: 16px;
   height: 16px;
 }
-
-.btnSoft-green {
-  background: var(--green-light);
-  color: var(--green);
-}
-
-.btnSoft-green:hover {
-  background: #bbf7d0;
-}
-
-.btnSoft-red {
-  background: var(--red-light);
-  color: var(--red);
-}
-
-.btnSoft-red:hover {
-  background: #fecaca;
-}

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
+import BookCover from "../../components/BookCover";
 import { useParams, useNavigate } from "react-router-dom";
 import "./book_detail.css";
 import { BooksAPI, BorrowAPI } from "../../api/endpoints";
 import { normalizeError } from "../../api/client";
 import { useToast } from "../../components/Toast";
 import { useAuth } from "../../auth/AuthContext";
+import Loading from "../../components/Loading";
 
 /**
  * BookDetail displays detailed information for a single book and
@@ -19,6 +21,10 @@ const BookDetail = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [book, setBook] = useState(null);
+  const [borrowing, setBorrowing] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [showLoading, setShowLoading] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -43,17 +49,34 @@ const BookDetail = () => {
   // Borrow the book
   async function borrowNow() {
     try {
+      setBorrowing(true);
+      setShowLoading(true);
+      setModalMessage("Permintaan peminjaman sedang diproses...");
+      setShowModal(true);
       await BorrowAPI.request({ book_id: id });
-      toast.push("Book borrowed successfully", "success");
-      // Navigate back to borrow page
-      navigate("/user/borrow");
+      setModalMessage("✓ Permintaan peminjaman dikirim!\nMenunggu persetujuan librarian");
+      setTimeout(() => {
+        setShowModal(false);
+        setShowLoading(false);
+        // Navigate back to borrow page
+        navigate("/user/borrow");
+      }, 2000);
     } catch (e) {
+      setModalMessage(`✗ Gagal: ${normalizeError(e)}`);
+      setTimeout(() => {
+        setShowModal(false);
+        setShowLoading(false);
+      }, 3000);
       toast.push(normalizeError(e), "error");
+    } finally {
+      setBorrowing(false);
     }
   }
 
   return (
     <div className="book-detail-container">
+      {showLoading && <Loading label="Memproses permintaan peminjaman..." fullScreen />}
+      
       {/* Breadcrumbs */}
       <nav className="breadcrumbs">
         <span className="breadcrumb-link" onClick={() => navigate('/user/dashboard')}>Home</span>
@@ -71,16 +94,7 @@ const BookDetail = () => {
           {/* Left: Cover and actions */}
           <div className="book-showcase">
             <div className="book-cover-large">
-              {book.cover_image ? (
-                <img src={book.cover_image} alt={`Cover of ${book.title}`} className="book-cover-image" loading="lazy" />
-              ) : (
-                <div className="book-cover-placeholder">
-                  <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                  </svg>
-                </div>
-              )}
+              <BookCover src={book.cover_image} size="lg" style={{ width: '100%', height: '100%' }} />
               <div className="status-badge-overlay">
                 <span className={`status-badge ${ (book.copies_available ?? book.stock ?? book.quantity ?? 0) > 0 ? 'status-available' : 'status-waitlist' }`}>
                   <span className="status-dot"></span>
@@ -89,8 +103,16 @@ const BookDetail = () => {
               </div>
             </div>
             <div className="action-buttons">
-              <button className="btn-borrow-now" onClick={borrowNow} disabled={(book.copies_available ?? book.stock ?? book.quantity ?? 0) <= 0}>
-                Borrow Now
+              <button
+                className="btn-borrow-now"
+                onClick={borrowNow}
+                disabled={borrowing || (book.copies_available ?? book.stock ?? book.quantity ?? 0) <= 0}
+                style={{
+                  opacity: borrowing ? 0.7 : 1,
+                  cursor: borrowing ? 'wait' : 'pointer'
+                }}
+              >
+                {borrowing ? "⏳ Memproses..." : "Borrow Now"}
               </button>
             </div>
             <div className="quick-stats">
@@ -137,6 +159,29 @@ const BookDetail = () => {
               </div>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Modal Notification */}
+      {showModal && (
+        <div
+          style={{
+            position: "fixed",
+            top: "20px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            backgroundColor: "white",
+            border: "1px solid #ddd",
+            borderRadius: "8px",
+            padding: "20px 30px",
+            boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+            zIndex: 9999,
+            maxWidth: "400px",
+            textAlign: "center",
+            whiteSpace: "pre-line",
+          }}
+        >
+          ⏳ {modalMessage}
         </div>
       )}
     </div>

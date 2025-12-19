@@ -42,6 +42,10 @@ export const BorrowAPI = {
   approve: (id) => api.post(`borrowings/${id}/approve`),
   // POST /api/borrowings/{id}/deny - librarian denies a pending borrow request
   deny: (id) => api.post(`borrowings/${id}/deny`),
+  // POST /api/borrowings/{id}/approve-return - librarian approves a return request
+  approveReturn: (id) => api.post(`borrowings/${id}/approve-return`),
+  // POST /api/borrowings/{id}/deny-return - librarian denies a return request
+  denyReturn: (id) => api.post(`borrowings/${id}/deny-return`),
 };
 
 // User management endpoints.  Currently only list is implemented
