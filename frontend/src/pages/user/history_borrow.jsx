@@ -184,7 +184,12 @@ const HistoryBorrow = () => {
         <div className="stats-grid">
           <div className="stat-card">
             <div className="stat-header">
-              <span className="stat-icon stat-icon-primary">📚</span>
+              <span className="stat-icon stat-icon-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+              </span>
               <p className="stat-label">Total Borrowed</p>
             </div>
             <p className="stat-value">{totalBorrowed}</p>
@@ -192,7 +197,12 @@ const HistoryBorrow = () => {
           </div>
           <div className="stat-card">
             <div className="stat-header">
-              <span className="stat-icon stat-icon-orange">📤</span>
+              <span className="stat-icon stat-icon-orange">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M22 12h-6l-2 3h-4l-2-3H2"></path>
+                  <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path>
+                </svg>
+              </span>
               <p className="stat-label">Active Loans</p>
             </div>
             <p className="stat-value">{activeCount}</p>
@@ -200,7 +210,12 @@ const HistoryBorrow = () => {
           </div>
           <div className="stat-card">
             <div className="stat-header">
-              <span className="stat-icon stat-icon-red">💰</span>
+              <span className="stat-icon stat-icon-red">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="12" y1="1" x2="12" y2="23"></line>
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+              </span>
               <p className="stat-label">Unpaid Fines</p>
             </div>
             <p className="stat-value stat-value-red">

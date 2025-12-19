@@ -85,12 +85,16 @@
   justify-content:center;
   width:40px;height:40px;
   border-radius:50%;
-  font-size:20px;
 }
 
-.stat-icon-primary{background:var(--blueSoft);} 
-.stat-icon-orange{background:var(--yellowSoft);} 
-.stat-icon-red{background:var(--redSoft);} 
+.stat-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.stat-icon-primary{background:var(--blueSoft); color: var(--blue);} 
+.stat-icon-orange{background:var(--yellowSoft); color: #d97706;} 
+.stat-icon-red{background:var(--redSoft); color: var(--red);} 
 
 .stat-label{
   margin:0;
