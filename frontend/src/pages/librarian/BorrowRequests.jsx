@@ -21,7 +21,12 @@ export default function BorrowRequests() {
             <div className="borrowCard" key={r.id}>
               <div className="borrowHead">
                 <div className="borrowUser">
-                  <div className="photo">🧑</div>
+                  <div className="photo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                  </div>
                   <div>
                     <div className="borrowName">{r.name}</div>
                     <div className="borrowTime">{r.time}</div>
@@ -40,7 +45,10 @@ export default function BorrowRequests() {
 
               <div className="borrowActions">
                 <button className="btnSoft btnSoft-green" onClick={() => approveRequest(r.id)}>
-                  ✓ Approve
+                  <svg className="btn-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  Approve
                 </button>
                 <button className="btnSoft btnSoft-red" onClick={() => denyRequest(r.id)}>
                   Deny
