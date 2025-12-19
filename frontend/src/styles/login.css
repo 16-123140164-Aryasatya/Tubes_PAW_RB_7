@@ -321,9 +321,17 @@
   border-color: #bbf7d0;
 }
 
+.login-error.login-success .error-icon {
+  color: #16a34a;
+}
+
 .dark .login-error.login-success {
   background-color: rgba(20, 83, 45, 0.2);
   border-color: #166534;
+}
+
+.dark .login-error.login-success .error-icon {
+  color: #86efac;
 }
 
 .login-error-text {
