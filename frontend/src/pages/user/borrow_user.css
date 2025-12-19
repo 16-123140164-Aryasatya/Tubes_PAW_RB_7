@@ -1,0 +1,594 @@
+/* Borrow Container */
+.borrow-container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Alert Banner */
+.alert-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.alert-danger {
+  background: var(--redSoft);
+  border: 1px solid var(--redSoft);
+}
+
+.alert-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.alert-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--red);
+}
+
+.alert-icon {
+  font-size: 1.25rem;
+}
+
+.alert-title {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.alert-message {
+  font-size: 0.875rem;
+  color: var(--red);
+  opacity: 0.8;
+  line-height: 1.5;
+}
+
+.btn-pay-now {
+  display: flex;
+  min-width: 84px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1rem;
+  height: 2.25rem;
+  background: var(--red);
+  /* Use panel colour rather than explicit white so button text adjusts with theme */
+  color: var(--panel);
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.btn-pay-now:hover {
+  background: var(--red);
+}
+
+@media (min-width: 480px) {
+  .alert-banner {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+/* Page Header */
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0 1rem;
+}
+
+.header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 18rem;
+}
+
+.page-title {
+  font-size: 1.875rem;
+  font-weight: 900;
+  color: var(--text);
+  line-height: 1.2;
+  letter-spacing: -0.033em;
+}
+
+.page-subtitle {
+  font-size: 1rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.header-actions {
+  display: flex;
+  align-items: flex-end;
+}
+
+.btn-history {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.btn-history:hover {
+  background: var(--panel);
+}
+
+.btn-icon {
+  font-size: 1.125rem;
+}
+
+@media (min-width: 768px) {
+  .page-title {
+    font-size: 2.25rem;
+  }
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 0 1rem;
+}
+
+.stat-card {
+  display: flex;
+  flex: 1;
+  min-width: 158px;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.25rem;
+  background: var(--panel);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm);
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stat-card:hover {
+  border-color: var(--blue);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.stat-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.stat-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  flex-shrink: 0;
+}
+
+.stat-label {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--text);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.stat-card.stat-warning .stat-icon {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.stat-card.stat-danger .stat-icon {
+  background: var(--red-light);
+  color: var(--red);
+}
+
+/* Filter Bar */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem 0.5rem;
+  overflow-x: auto;
+}
+
+.filter-chips {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.filter-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 2.25rem;
+  padding: 0 1rem;
+  background: var(--panel);
+  border: none;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.filter-chip:hover {
+  background: var(--line);
+}
+
+.filter-chip.active {
+  background: var(--blue);
+  /* Active filter chips use the panel colour for text instead of a
+     hardcoded white to remain in sync with the palette (the panel
+     variable resolves to white in the default theme). */
+  color: var(--panel);
+}
+
+.chip-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.25rem;
+  background: var(--redSoft);
+  color: var(--red);
+  font-size: 0.625rem;
+  font-weight: 700;
+  border-radius: 9999px;
+}
+
+.sort-info {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.sort-icon {
+  font-size: 1.125rem;
+}
+
+@media (min-width: 640px) {
+  .sort-info {
+    display: flex;
+  }
+}
+
+/* Books List */
+.books-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0 1rem;
+}
+
+.book-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  background: var(--panel);
+  border: 1.5px solid var(--border);
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
+}
+
+.book-item:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.book-item-overdue {
+  border-color: var(--redSoft);
+}
+
+@media (min-width: 768px) {
+  .book-item {
+    flex-direction: row;
+  }
+}
+
+/* Book Cover */
+.book-cover-container {
+  position: relative;
+  width: 6rem;
+  height: 8rem;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  background: var(--panel);
+}
+
+.book-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Book Info */
+.book-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  align-self: stretch;
+}
+
+.book-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.book-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.5;
+  transition: color 0.15s;
+}
+
+.book-item:hover .book-title {
+  color: var(--blue);
+}
+
+.book-meta {
+  font-size: 0.875rem;
+  color: var(--muted);
+  margin-top: 0.25rem;
+}
+
+/* Status Badge */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-overdue {
+  background: var(--redSoft);
+  color: var(--red);
+}
+
+.status-due-soon {
+  background: var(--yellowSoft);
+  color: var(--yellow);
+}
+
+.status-active {
+  background: var(--greenSoft);
+  color: var(--green);
+}
+
+/* Book Details Grid */
+.book-details-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem 1.5rem;
+  margin-top: 1rem;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.detail-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.detail-value {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+/* Book Actions */
+.book-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-outline,
+.btn-danger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--blue);
+  /* Use panel colour for button text instead of explicit white so it
+     automatically reflects the theme.  In the default theme this
+     renders white, but it will adapt if the palette is adjusted. */
+  color: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.btn-primary:hover {
+  background: var(--blue);
+}
+
+.btn-secondary {
+  background: var(--panel);
+  color: var(--text);
+}
+
+.btn-secondary:hover {
+  background: var(--line);
+}
+
+.btn-outline {
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--line);
+}
+
+.btn-outline:hover {
+  background: var(--panel);
+}
+
+.btn-danger {
+  background: var(--redSoft);
+  color: var(--red);
+}
+
+.btn-danger:hover {
+  background: var(--redSoft);
+}
+
+@media (min-width: 640px) {
+  .book-actions {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+/* Dark mode support has been intentionally simplified.  Rather than switching to a
+   completely different colour scheme, we reuse the base palette variables so
+   that the interface remains consistent in both light and dark environments.
+   This prevents overly dark backgrounds and high contrast text that looked
+   unnatural in the previous design. */
+@media (prefers-color-scheme: dark) {
+  .borrow-container,
+  .stat-card,
+  .btn-history,
+  .book-item,
+  .filter-chip,
+  .btn-secondary,
+  .btn-outline {
+    background: var(--panel);
+    border-color: var(--line);
+    color: var(--text);
+  }
+  .filter-chip.active {
+    background: var(--blue);
+    color: var(--panel);
+  }
+  .filter-chip:hover,
+  .btn-secondary:hover,
+  .btn-outline:hover {
+    background: var(--line);
+  }
+  .alert-danger,
+  .status-overdue {
+    background: var(--redSoft);
+    border-color: var(--redSoft);
+    color: var(--red);
+  }
+  .alert-header,
+  .alert-message {
+    color: var(--red);
+  }
+  .status-due-soon {
+    background: var(--yellowSoft);
+    color: var(--yellow);
+  }
+  .status-active {
+    background: var(--greenSoft);
+    color: var(--green);
+  }
+}
+/* Return Button */
+.btn-return {
+  background: var(--blue);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 160ms ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.btn-return:hover {
+  background: #1540b0;
+  transform: translateY(-1px);
+}
+
+.btn-return:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Overdue highlighting */
+.book-item-overdue .detail-value {
+  color: var(--red);
+  font-weight: 600;
+}
+
+.text-danger {
+  color: var(--red) !important;
+}

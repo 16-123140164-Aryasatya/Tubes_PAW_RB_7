@@ -1,0 +1,120 @@
+/* Borrow Requests page specific styles */
+
+.borrowList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+}
+
+.borrowCard {
+  background: var(--blue-soft);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.borrowHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.borrowUser {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.photo {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue) 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.borrowName {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.borrowTime {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.roleTag {
+  background: var(--blue-light);
+  color: var(--blue);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.borrowBody {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bookThumb {
+  width: 32px;
+  height: 44px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+  flex-shrink: 0;
+}
+
+.borrowBook {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.borrowMeta {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.borrowActions {
+  display: flex;
+  gap: 8px;
+}
+
+.btnSoft {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.btnSoft-green {
+  background: var(--green-light);
+  color: var(--green);
+}
+
+.btnSoft-green:hover {
+  background: #bbf7d0;
+}
+
+.btnSoft-red {
+  background: var(--red-light);
+  color: var(--red);
+}
+
+.btnSoft-red:hover {
+  background: #fecaca;
+}
