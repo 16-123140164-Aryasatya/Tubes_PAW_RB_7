@@ -1,145 +1,212 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
-import { useToast } from "../components/Toast";
-// Reuse the styling from the login page.  The register page shares
-// the same card layout and input styles, so importing the login
-// stylesheet applies those rules here as well.  Additional classes
-// defined below use the same naming convention to ensure a cohesive
-// appearance.
 import "../styles/login.css";
 
-export default function Register() {
-  // Access authentication actions and helpers
-  const { register, login } = useAuth();
-  const toast = useToast();
-  const nav = useNavigate();
-
-  // Local state for form fields
+export default function Register({ setUser }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // Flag to show loading indicator on submit
-  const [busy, setBusy] = useState(false);
-  // Role selection, defaults to member.  Librarian registers staff.
-  const [role, setRole] = useState("member");
+  const [showPassword, setShowPassword] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { register, login } = useAuth();
 
-  /**
-   * Handle form submission.  Creates a new user via the auth
-   * context, then logs them in and redirects based on their role.  On
-   * error, a toast message is shown and the user remains on the form.
-   */
-  async function onSubmit(e) {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    setBusy(true);
-    // Call the register function with selected role
-    const res = await register(name, email, password, role);
-    if (!res.ok) {
-      setBusy(false);
-      toast.push(res.message || "Pendaftaran gagal", "error");
+    setMessage("");
+
+    if (!termsAccepted) {
+      setMessage("⚠️ Anda harus menyetujui syarat dan ketentuan untuk mendaftar.");
       return;
     }
-    // Automatically log in after registration
-    const loginRes = await login({ email, password });
-    setBusy(false);
-    if (!loginRes.ok) {
-      toast.push("Terdaftar, namun login gagal. Silakan login manual.", "error");
-      nav("/login");
-      return;
+
+    setLoading(true);
+
+    try {
+      // Hanya member yang bisa register, librarian hanya bisa login
+      const res = await register(name, email, password, "member");
+
+      if (!res.ok) {
+        setMessage(res.message || "Pendaftaran gagal. Silakan coba lagi.");
+        setLoading(false);
+        return;
+      }
+
+      // Auto login setelah register
+      const loginRes = await login({ email, password });
+      setLoading(false);
+
+      if (!loginRes.ok) {
+        setMessage("Pendaftaran berhasil, tapi login otomatis gagal. Silakan login manual.");
+        return;
+      }
+
+      navigate("/user/dashboard");
+    } catch (err) {
+      setMessage("Terjadi kesalahan. Silakan coba lagi.");
+      setLoading(false);
     }
-    // Determine redirect based on role (member → user dashboard)
-    const r = loginRes.user?.role || role;
-    toast.push("Pendaftaran berhasil!", "success");
-    if (r === "librarian") nav("/");
-    else nav("/user/dashboard");
-  }
+  };
 
   return (
     <div className="login-container">
-      <div className="login-card">
+      <div className="login-left">
         <div className="login-header">
-          {/* Title only – remove decorative book icon */}
-          <h1 className="login-title">Buat Akun Baru</h1>
-          <p className="login-subtitle">Silakan lengkapi informasi berikut</p>
+          <div className="login-logo">
+            <div className="login-logo-icon">📚</div>
+          </div>
+          <div className="login-title">Librarizz</div>
         </div>
 
-        <form className="login-form" onSubmit={onSubmit}>
-          <div className="form-group">
-            <label htmlFor="name">Nama</label>
-            <input
-              id="name"
-              type="text"
-              className="form-input"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Nama lengkap"
-              required
-            />
+        <div className="login-main-content">
+          <div className="login-headings">
+            <h1 className="login-h1">Buat akun baru</h1>
+            <p className="login-subtitle">
+              Daftar sebagai member untuk meminjam buku
+            </p>
           </div>
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              className="form-input"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              className="form-input"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              required
-            />
-          </div>
-          {/* Role selection implemented with the same button style as the login page */}
-          <div className="form-group">
-            <label className="role-label">Pilih Peran:</label>
-            <div className="role-buttons">
-              <button
-                type="button"
-                className={`role-btn ${role === 'member' ? 'active' : ''}`}
-                onClick={() => setRole('member')}
-              >
-                {/* Empty icon for consistent spacing */}
-                <div className="role-icon"></div>
-                <div className="role-info">
-                  <div className="role-name">Member</div>
-                  <div className="role-desc">Pinjam &amp; lihat buku</div>
+
+          <form onSubmit={handleRegister} className="login-form">
+            {message && (
+              <div className={`login-error ${message.includes("berhasil") ? "login-success" : ""}`}>
+                <p className="login-error-text">
+                  {message.includes("berhasil") ? "✅" : "⚠️"} {message}
+                </p>
+              </div>
+            )}
+
+            <div className="login-input-section">
+              <div className="login-input-group">
+                <label htmlFor="name" className="login-input-label">
+                  Nama Lengkap
+                </label>
+                <div className="login-input-wrapper">
+                  <input
+                    id="name"
+                    type="text"
+                    placeholder="Nama Anda"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="login-input"
+                    required
+                    disabled={loading}
+                  />
+                  <div className="login-input-icon">
+                    <span className="login-input-icon-element">👤</span>
+                  </div>
                 </div>
-              </button>
-              <button
-                type="button"
-                className={`role-btn ${role === 'librarian' ? 'active' : ''}`}
-                onClick={() => setRole('librarian')}
-              >
-                {/* Empty icon for consistent spacing */}
-                <div className="role-icon"></div>
-                <div className="role-info">
-                  <div className="role-name">Librarian</div>
-                  <div className="role-desc">Kelola perpustakaan</div>
+              </div>
+
+              <div className="login-input-group">
+                <label htmlFor="email" className="login-input-label">
+                  Email
+                </label>
+                <div className="login-input-wrapper">
+                  <input
+                    id="email"
+                    type="email"
+                    placeholder="nama@contoh.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="login-input"
+                    required
+                    disabled={loading}
+                  />
+                  <div className="login-input-icon">
+                    <span className="login-input-icon-element">✉️</span>
+                  </div>
                 </div>
-              </button>
+              </div>
+
+              <div className="login-input-group">
+                <label htmlFor="password" className="login-input-label">
+                  Password
+                </label>
+                <div className="login-input-wrapper">
+                  <input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Minimal 6 karakter"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="login-input"
+                    required
+                    minLength="6"
+                    disabled={loading}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="login-password-toggle"
+                    tabIndex="-1"
+                  >
+                    <span className="login-input-icon-element">
+                      {showPassword ? "👁️" : "👁️‍🗨️"}
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <label className="login-remember-label">
+              <input
+                type="checkbox"
+                className="login-remember-checkbox"
+                checked={termsAccepted}
+                onChange={(e) => setTermsAccepted(e.target.checked)}
+                disabled={loading}
+              />
+              <span className="login-remember-text">
+                Saya setuju dengan syarat dan ketentuan *
+              </span>
+            </label>
+
+            <button
+              type="submit"
+              className="login-submit-button"
+              disabled={loading}
+            >
+              {loading ? "Mendaftarkan..." : "Daftar"}
+            </button>
+          </form>
+
+          <div className="login-signup-section">
+            <span className="login-signup-text">Sudah punya akun? </span>
+            <Link to="/login" className="login-signup-link">
+              Masuk di sini
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      <div className="login-right">
+        <img
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuByQUUB6wGlhXluObx66gmVOirVDB7Pr7r5dF1vp6_zrETur6nKVvNM6MbWne-p-LQfmPm8kJH75ar2zeAWB_XMbS8jVImFpXx4de9YPjzn53hBKi7aYHBpYKzTndd6JLIkQl88kZCvmo71ROJMHba0116JqU9DLu5dKgdnzmWqLVDu0UR6PELcoof-rJCdQX60gfgD7KciWNm7B7OsEtLxPPkhjnFIAh_G91wXGuGUEYopzukHT3QNWm7TxtlOU7W9c2vrCc7OxR64"
+          alt="Library Background"
+          className="login-bg-image"
+        />
+        <div className="login-bg-overlay"></div>
+        <div className="login-right-content">
+          <div className="login-quote">
+            <div className="login-quote-badge">
+              <span className="login-quote-badge-text">📖 Bergabung</span>
+            </div>
+            <blockquote className="login-quote-text">
+              "Membaca adalah petualangan tanpa batas"
+            </blockquote>
+            <div className="login-quote-footer">
+              <div className="login-quote-divider"></div>
+              <cite className="login-quote-author">- Komunitas Pembaca</cite>
             </div>
           </div>
-          <button type="submit" className="submit-btn" disabled={busy}>
-            {/* Remove emoji from button label */}
-            {busy ? "Mendaftarkan..." : "Daftar"}
-          </button>
-        </form>
-
-        <div className="login-footer">
-          <p>
-            Sudah punya akun? <Link to="/login">Login</Link>
-          </p>
+        </div>
+        <div className="login-decorative">
+          <div className="login-decorative-dot"></div>
+          <div className="login-decorative-dot-2"></div>
+          <div className="login-decorative-dot-3"></div>
         </div>
       </div>
     </div>
