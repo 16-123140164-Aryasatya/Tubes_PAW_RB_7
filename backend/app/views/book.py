@@ -277,7 +277,6 @@ def delete_book(request):
             return Response(json={'success': False, 'message': 'Unauthorized'}, status=401)
         if user.role != UserRole.LIBRARIAN:
             return Response(json={'success': False, 'message': 'Forbidden: librarian only'}, status=403)
-    )
 
         # Do not delete if there are active borrowings
         from ..models import Borrowing
