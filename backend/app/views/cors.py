@@ -19,4 +19,12 @@ def options_view(request):
     returns a 200 OK response without any body. CORS headers are set via
     a ``NewResponse`` subscriber in the application setup.
     """
-    return Response(status=200)
+    response = Response(status=200)
+    # Paksa izinkan domain vercel kamu di sini
+    response.headers.update({
+        'Access-Control-Allow-Origin': 'https://uas-paw-kelompok-9-librarizz.vercel.app',
+        'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, PUT, DELETE',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Allow-Credentials': 'true',
+    })
+    return response
