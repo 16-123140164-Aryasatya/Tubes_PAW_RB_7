@@ -47,9 +47,8 @@ def add_cors_headers(event):
         allow_origin = origins[0]
 
     response.headers['Access-Control-Allow-Origin'] = allow_origin
-    response.headers['Access-Control-Allow-Methods'] = 'GET,POST,PUT,DELETE,OPTIONS,PATCH'
-    response.headers['Access-Control-Allow-Headers'] = 'Content-Type,Authorization,X-Requested-With,Accept,Origin'
-    response.headers['Access-Control-Max-Age'] = '86400'
+    response.headers['Access-Control-Allow-Methods'] = 'GET,POST,PUT,DELETE,OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type,Authorization'
     # Allow cookies/authorization headers to be sent with requests
     response.headers['Access-Control-Allow-Credentials'] = 'true'
 
