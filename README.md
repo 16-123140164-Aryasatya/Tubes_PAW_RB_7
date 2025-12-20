@@ -7,25 +7,26 @@
 
 ---
 
-## 👥 Tim Pengembang
+## Tim Pengembang
 
 | Nama | NIM | Role | Pembagian Tugas |
 |------|-----|------|-----------------|
-| [Nama Anggota 1] | [NIM] | Team Leader | [Tugas yang dikerjakan] |
-| [Nama Anggota 2] | [NIM] | Frontend Developer | [Tugas yang dikerjakan] |
-| [Nama Anggota 3] | [NIM] | Frontend Developer | [Tugas yang dikerjakan] |
-| [Nama Anggota 4] | [NIM] | Backend Developer | [Tugas yang dikerjakan] |
-| [Nama Anggota 5] | [NIM] | Backend Developer | [Tugas yang dikerjakan] |
+| Muhammad Nurikhsan | 123140057 | Team Leader | Koordinasi tim, integrasi FE-BE, deployment, dokumentasi & video |
+| Muharyan Syaifullah | 123140045 | Frontend Developer | Struktur & routing FE, desain UI/UX, halaman Librarian (dashboard, inventory), responsive layout |
+| Nadia Antashiva | 123140060 | Frontend Developer | State management (context/store), halaman Member (catalog, history, profile), form login/register & validation |
+| Aryasatya Widyatna Akbar | 123140164 | Backend Developer | API auth & borrowing, aturan limit/denda, middleware CORS, error handling |
+| Marcel Kevin Togap Siagian | 123140054 | Backend Developer | API buku (CRUD, search), validasi payload, seed data, sinkronisasi Alembic |
+| Ivan Nandira Mangunang | 123140094 | Database Specialist | Desain schema PostgreSQL, relasi users-books-borrowings, tuning query, backup/migrasi |
 
 ---
 
-## 📖 Deskripsi Project
+## Deskripsi Project
 
 Aplikasi **Library Management System** adalah sistem manajemen perpustakaan digital yang memungkinkan anggota untuk meminjam buku dan pustakawan untuk mengelola koleksi buku serta transaksi peminjaman. Sistem ini dibangun menggunakan **Python Pyramid Framework** untuk backend dan **ReactJS** untuk frontend dengan database **PostgreSQL**.
 
 ### Fitur Utama
 
-#### ✅ Fitur Wajib (Core Features):
+#### Fitur Wajib (Core Features):
 
 1. **User Authentication**
    - Register dan Login dengan role Member dan Librarian
@@ -55,7 +56,7 @@ Aplikasi **Library Management System** adalah sistem manajemen perpustakaan digi
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Frontend
 - **Framework:** ReactJS (Vite)
@@ -83,7 +84,7 @@ Aplikasi **Library Management System** adalah sistem manajemen perpustakaan digi
 
 ---
 
-## 📂 Struktur Project
+## Struktur Project
 
 ```
 uas-paw-kelompok-9/
@@ -123,7 +124,7 @@ uas-paw-kelompok-9/
 
 ---
 
-## 🚀 Cara Instalasi dan Menjalankan
+## Cara Instalasi dan Menjalankan
 
 ### Prerequisites
 - Python 3.9+
@@ -188,19 +189,19 @@ Frontend akan berjalan di `http://localhost:5173`
 
 ---
 
-## 🔗 Link Deployment
+## Link Deployment
 
-- **Frontend (Vercel):** [https://[project-name].vercel.app](https://[project-name].vercel.app)
-- **Backend (Domain):** [https://[domain-name].web.id](https://[domain-name].web.id)
+- **Frontend (Vercel):** [https://[project-name].vercel.app](https://uas-paw-kelompok-9-librarizz.vercel.app/)
+- **Backend (Domain):** [https://[domain-name].web.id](huas-paw-kelompok-9-production.up.railway.app)
 - **Video Presentasi:** [Link YouTube/Google Drive - To be added]
 
 ---
 
-## 📡 API Documentation
+## API Documentation
 
 ### Base URL
 - **Local:** `http://localhost:6543/api`
-- **Production:** `https://[domain-name].web.id/api`
+- **Production:** `uas-paw-kelompok-9-production.up.railway.app/api`
 
 ### Authentication Endpoints
 
@@ -209,22 +210,7 @@ Frontend akan berjalan di `http://localhost:5173`
 POST /api/auth/register
 Content-Type: application/json
 
-{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "password123",
-  "role": "member"
-}
 
-Response 201:
-{
-  "success": true,
-  "message": "Registration successful",
-  "data": {
-    "user": { "id": 1, "name": "John Doe", "email": "john@example.com", "role": "member" },
-    "token": "eyJhbGciOiJIUzI1NiIs..."
-  }
-}
 ```
 
 #### 2. Login
@@ -232,20 +218,7 @@ Response 201:
 POST /api/auth/login
 Content-Type: application/json
 
-{
-  "email": "john@example.com",
-  "password": "password123"
-}
 
-Response 200:
-{
-  "success": true,
-  "message": "Login successful",
-  "data": {
-    "user": { "id": 1, "name": "John Doe", "email": "john@example.com", "role": "member" },
-    "token": "eyJhbGciOiJIUzI1NiIs..."
-  }
-}
 ```
 
 #### 3. Get Current User
@@ -253,11 +226,7 @@ Response 200:
 GET /api/auth/me
 Authorization: Bearer {token}
 
-Response 200:
-{
-  "success": true,
-  "data": { "id": 1, "name": "John Doe", "email": "john@example.com", "role": "member" }
-}
+
 ```
 
 ### Book Endpoints
@@ -266,46 +235,21 @@ Response 200:
 ```http
 GET /api/books?category=Fiction&available=true
 
-Response 200:
-{
-  "success": true,
-  "data": [
-    {
-      "id": 1,
-      "title": "Book Title",
-      "author": "Author Name",
-      "isbn": "ISBN-123",
-      "category": "Fiction",
-      "copies_total": 5,
-      "copies_available": 3,
-      "description": "Book description",
-      "cover_image": "/uploads/cover.jpg",
-      "is_available": true
-    }
-  ]
-}
+
 ```
 
 #### 5. Get Book Detail
 ```http
 GET /api/books/{id}
 
-Response 200:
-{
-  "success": true,
-  "data": { ...book details... }
-}
+
 ```
 
 #### 6. Search Books
 ```http
 GET /api/books/search?q=Harry
 
-Response 200:
-{
-  "success": true,
-  "data": [ ...matching books... ]
-}
+
 ```
 
 #### 7. Create Book (Librarian Only)
@@ -314,23 +258,7 @@ POST /api/books
 Authorization: Bearer {librarian-token}
 Content-Type: application/json
 
-{
-  "title": "New Book",
-  "author": "Author Name",
-  "isbn": "ISBN-12345",
-  "category": "Fiction",
-  "copies_total": 5,
-  "copies_available": 5,
-  "description": "Description",
-  "cover_image": "/uploads/cover.jpg"
-}
 
-Response 201:
-{
-  "success": true,
-  "message": "Book created successfully",
-  "data": { ...book details... }
-}
 ```
 
 #### 8. Update Book (Librarian Only)
@@ -339,17 +267,7 @@ PUT /api/books/{id}
 Authorization: Bearer {librarian-token}
 Content-Type: application/json
 
-{
-  "title": "Updated Title",
-  "copies_available": 4
-}
 
-Response 200:
-{
-  "success": true,
-  "message": "Book updated successfully",
-  "data": { ...updated book... }
-}
 ```
 
 #### 9. Delete Book (Librarian Only)
@@ -357,11 +275,7 @@ Response 200:
 DELETE /api/books/{id}
 Authorization: Bearer {librarian-token}
 
-Response 200:
-{
-  "success": true,
-  "message": "Book deleted successfully"
-}
+
 ```
 
 ### Borrowing Endpoints
@@ -372,23 +286,7 @@ POST /api/borrowings
 Authorization: Bearer {token}
 Content-Type: application/json
 
-{
-  "book_id": 1
-}
 
-Response 201:
-{
-  "success": true,
-  "message": "Borrow request created and pending approval",
-  "data": {
-    "id": 1,
-    "book": { ...book details... },
-    "member": { ...user details... },
-    "borrow_date": "2025-12-20",
-    "due_date": "2026-01-03",
-    "status": "pending"
-  }
-}
 ```
 
 #### 11. Get My Borrowings
@@ -396,11 +294,7 @@ Response 201:
 GET /api/borrowings/my
 Authorization: Bearer {token}
 
-Response 200:
-{
-  "success": true,
-  "data": [ ...active and pending borrowings... ]
-}
+
 ```
 
 #### 12. Get Borrowing History
@@ -408,11 +302,7 @@ Response 200:
 GET /api/borrowings/history
 Authorization: Bearer {token}
 
-Response 200:
-{
-  "success": true,
-  "data": [ ...all borrowing history... ]
-}
+
 ```
 
 #### 13. Request Return
@@ -420,11 +310,7 @@ Response 200:
 POST /api/borrowings/{id}/return
 Authorization: Bearer {token}
 
-Response 200:
-{
-  "success": true,
-  "message": "Return request submitted, awaiting librarian approval"
-}
+
 ```
 
 #### 14. Approve Borrowing (Librarian Only)
@@ -432,11 +318,7 @@ Response 200:
 POST /api/borrowings/{id}/approve
 Authorization: Bearer {librarian-token}
 
-Response 200:
-{
-  "success": true,
-  "message": "Borrowing approved and activated"
-}
+
 ```
 
 #### 15. Approve Return (Librarian Only)
@@ -444,21 +326,12 @@ Response 200:
 POST /api/borrowings/{id}/approve-return
 Authorization: Bearer {librarian-token}
 
-Response 200:
-{
-  "success": true,
-  "message": "Return approved, borrowing marked as returned",
-  "data": {
-    "borrowing": { ...details... },
-    "fine": 15000,
-    "fine_message": "Late return fine: Rp 15,000"
-  }
-}
+
 ```
 
 ---
 
-## 🗄️ Database Schema
+## Database Schema
 
 ### ERD (Entity Relationship Diagram)
 
@@ -478,120 +351,88 @@ Response 200:
                                                  └─────────────┘
 ```
 
-### Table: `users`
-| Column | Type | Description |
-|--------|------|-------------|
-| id | INTEGER (PK) | Primary key |
-| name | VARCHAR(100) | User's full name |
-| email | VARCHAR(100) | Unique email (login) |
-| password | VARCHAR(255) | Hashed password (bcrypt) |
-| role | ENUM | 'member' or 'librarian' |
 
-### Table: `books`
-| Column | Type | Description |
-|--------|------|-------------|
-| id | INTEGER (PK) | Primary key |
-| title | VARCHAR(200) | Book title |
-| author | VARCHAR(100) | Author name |
-| isbn | VARCHAR(20) | Unique ISBN |
-| category | VARCHAR(50) | Book category |
-| copies_total | INTEGER | Total copies owned |
-| copies_available | INTEGER | Available copies |
-| description | TEXT | Book description |
-| cover_image | VARCHAR(255) | Cover image path |
+## Screenshots (Ringkas)
 
-### Table: `borrowings`
-| Column | Type | Description |
-|--------|------|-------------|
-| id | INTEGER (PK) | Primary key |
-| book_id | INTEGER (FK) | Foreign key to books |
-| member_id | INTEGER (FK) | Foreign key to users |
-| borrow_date | DATE | Borrowing date |
-| due_date | DATE | Due date (14 days) |
-| return_date | DATE | Actual return date |
-| fine | NUMERIC(10,2) | Late fee (Rp 5000/day) |
-| status | ENUM | 'pending', 'active', 'returned', 'denied' |
+### Autentikasi
+Alur login/register dengan JWT: user membuat akun atau masuk, token disimpan FE lalu dipakai untuk memanggil endpoint proteksi.
+<p>
+   <img src="./screenshot/Login.png" alt="Login" width="49%" />
+   <img src="./screenshot/Register.png" alt="Register" width="49%" />
+</p>
 
----
+### Member (2 kolom)
+Alur member: melihat katalog, meminjam (pending/active), memantau riwayat dan profil.
+<p>
+   <img src="./screenshot/memberDashboar.png" alt="Member Dashboard" width="49%" />
+   <img src="./screenshot/memberKatalog.png" alt="Member Catalog" width="49%" />
+   <img src="./screenshot/memberCurrentBorrowing.png" alt="Member Borrowing" width="49%" />
+   <img src="./screenshot/memberCurrentBorrowingPending.png" alt="Member Pending Borrowing" width="49%" />
+   <img src="./screenshot/memberHistory.png" alt="Member History" width="49%" />
+   <img src="./screenshot/memberProfile.png" alt="Member Profile" width="49%" />
+</p>
 
-## 📸 Screenshots
-
-### 1. Landing Page
-![Landing Page](./screenshots/landing.png)
-
-### 2. Member Dashboard
-![Member Dashboard](./screenshots/member-dashboard.png)
-
-### 3. Book Catalog
-![Book Catalog](./screenshots/catalog.png)
-
-### 4. Borrowing History
-![Borrowing History](./screenshots/history.png)
-
-### 5. Librarian Dashboard
-![Librarian Dashboard](./screenshots/librarian-dashboard.png)
-
-### 6. Book Management
-![Book Management](./screenshots/manage-books.png)
+### Librarian (2 kolom)
+Alur librarian: mengelola stok/CRUD buku, menyetujui/menolak pinjaman, memproses pengembalian, memantau transaksi dan member.
+<p>
+   <img src="./screenshot/librarianInventory.png" alt="Librarian Inventory" width="49%" />
+   <img src="./screenshot/librarianManageBooks.png" alt="Librarian Manage Books" width="49%" />
+   <img src="./screenshot/addaBooks.png" alt="Add Books" width="49%" />
+   <img src="./screenshot/librarianBorrowReq.png" alt="Borrow Requests" width="49%" />
+   <img src="./screenshot/librarianReturnReq.png" alt="Return Requests" width="49%" />
+   <img src="./screenshot/librarianTransaction.png" alt="Transactions" width="49%" />
+   <img src="./screenshot/librarianMemberList.png" alt="Member List" width="49%" />
+</p>
 
 ---
 
-## 🎥 Video Presentasi
+## Video Presentasi
 
 **Link Video:** [YouTube/Google Drive - To be added]
 
-**Durasi:** Max 10 menit
+---
 
-**Konten Video:**
-- Intro tim dan pembagian tugas
-- Demo semua fitur aplikasi
-- Penjelasan teknis (Frontend, Backend, Database)
-- Code walkthrough singkat
-- Deployment demonstration
+## Checklist Pengerjaan
+
+### Frontend
+- 6+ functional components dengan proper hierarchy
+- useState dan useEffect implementation
+- Responsive design (Flexbox/Grid)
+- 3+ forms dengan validation
+- React Router untuk navigasi
+- Loading states dan error handling
+
+### Backend
+- 15+ RESTful API endpoints
+- Proper HTTP methods (GET, POST, PUT, DELETE)
+- JSON response format
+- Business logic dengan OOP
+- Data validation dan error handling
+
+### Database
+- PostgreSQL dengan SQLAlchemy ORM
+- 3 tabel dengan relasi (One-to-Many)
+- Alembic migrations
+- Seed data untuk testing
+
+### Authentication & Authorization
+- User register dan login
+- Password hashing (bcrypt)
+- JWT token management
+- Protected routes
+- Role-based access (Member & Librarian)
+
+### Deployment & Documentation
+- Frontend deployed to Vercel
+- Backend deployed to *.web.id domain
+- Database PostgreSQL di Railway
+- README lengkap dengan API docs
+- Code comments yang membantu
+- Video presentasi (max 10 menit)
 
 ---
 
-## 📝 Checklist Pengerjaan
-
-### Frontend ✅
-- [x] 6+ functional components dengan proper hierarchy
-- [x] useState dan useEffect implementation
-- [x] Responsive design (Flexbox/Grid)
-- [x] 3+ forms dengan validation
-- [x] React Router untuk navigasi
-- [x] Loading states dan error handling
-
-### Backend ✅
-- [x] 15+ RESTful API endpoints
-- [x] Proper HTTP methods (GET, POST, PUT, DELETE)
-- [x] JSON response format
-- [x] Business logic dengan OOP
-- [x] Data validation dan error handling
-
-### Database ✅
-- [x] PostgreSQL dengan SQLAlchemy ORM
-- [x] 3 tabel dengan relasi (One-to-Many)
-- [x] Alembic migrations
-- [x] Seed data untuk testing
-
-### Authentication & Authorization ✅
-- [x] User register dan login
-- [x] Password hashing (bcrypt)
-- [x] JWT token management
-- [x] Protected routes
-- [x] Role-based access (Member & Librarian)
-
-### Deployment & Documentation 🚧
-- [ ] Frontend deployed to Vercel
-- [ ] Backend deployed to *.web.id domain
-- [ ] Database PostgreSQL di Railway
-- [x] README lengkap dengan API docs
-- [x] Code comments yang membantu
-- [ ] Video presentasi (max 10 menit)
-
----
-
-## 👨‍💻 Development Notes
+## Development Notes
 
 ### Known Issues & Limitations
 - File upload untuk cover buku masih menggunakan URL string
@@ -607,13 +448,7 @@ Response 200:
 
 ---
 
-## 📄 License
-
-This project is created for educational purposes as part of the Web Application Development course final project at Institut Teknologi Sumatera.
-
----
-
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **Dosen Pengampu:** M Habib Algifari, S.Kom., M.T.I.
 - **Program Studi:** Teknik Informatika
@@ -622,4 +457,4 @@ This project is created for educational purposes as part of the Web Application 
 
 ---
 
-**© 2025 Kelompok 9 - IF25-22014 Pengembangan Aplikasi Web**
+**Kelompok 9 - IF25-22014 Pengembangan Aplikasi Web RB**
